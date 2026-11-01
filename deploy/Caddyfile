@@ -1,0 +1,25 @@
+{$DOMAIN}, www.{$DOMAIN} {
+	encode zstd gzip
+
+	# API və yüklənmiş şəkillər birbaşa backend-ə
+	handle /api/* {
+		reverse_proxy api:4000
+	}
+	handle /uploads/* {
+		header Cache-Control "public, max-age=2592000, immutable"
+		reverse_proxy api:4000
+	}
+	# Qalan hər şey — Next.js
+	handle {
+		reverse_proxy web:3000
+	}
+
+	request_body {
+		max_size 60MB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

@@ -1,0 +1,375 @@
+// Dəyiş — takas platformasının verilənlər bazası sxemi
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum Plan {
+  FREE
+  PLUS
+}
+
+enum Condition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  FOR_PARTS
+}
+
+enum ListingStatus {
+  ACTIVE
+  RESERVED
+  TRADED
+  ARCHIVED
+  PENDING_REVIEW
+  REJECTED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COUNTERED
+  COMPLETED
+}
+
+enum MessageKind {
+  TEXT
+  SYSTEM
+  OFFER
+}
+
+enum TxType {
+  TOPUP
+  BUMP
+  VIP
+  PLUS
+  BONUS
+  REFUND
+}
+
+enum TxStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  phone           String?   @unique
+  passwordHash    String
+  name            String
+  avatarUrl       String?
+  bio             String?
+  city            String    @default("baku")
+  locale          String    @default("az")
+  role            Role      @default(USER)
+  plan            Plan      @default(FREE)
+  planUntil       DateTime?
+  phoneVerified   Boolean   @default(false)
+  emailVerified   Boolean   @default(false)
+  isBanned        Boolean   @default(false)
+  /// Balans qəpiklə (1 AZN = 100)
+  balance         Int       @default(0)
+  boostCredits    Int       @default(0)
+  completedTrades Int       @default(0)
+  ratingSum       Int       @default(0)
+  ratingCount     Int       @default(0)
+  referralCode    String    @unique
+  referredById    String?
+  referredBy      User?     @relation("Referrals", fields: [referredById], references: [id])
+  referrals       User[]    @relation("Referrals")
+  referralRewarded Boolean  @default(false)
+  lastSeenAt      DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessions        Session[]
+  listings        Listing[]
+  favorites       Favorite[]
+  offersSent      Offer[]        @relation("OfferFrom")
+  offersReceived  Offer[]        @relation("OfferTo")
+  messages        Message[]
+  convAsA         Conversation[] @relation("ConvA")
+  convAsB         Conversation[] @relation("ConvB")
+  reviewsWritten  Review[]       @relation("ReviewAuthor")
+  reviewsReceived Review[]       @relation("ReviewTarget")
+  notifications   Notification[]
+  transactions    Transaction[]
+  reports         Report[]       @relation("ReportAuthor")
+  reportsAgainst  Report[]       @relation("ReportTarget")
+  swipes          Swipe[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String   @unique
+  userAgent  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  icon      String
+  color     String     @default("#E8334A")
+  sortOrder Int        @default(0)
+  nameAz    String
+  nameEn    String
+  nameTr    String
+  nameRu    String
+  parentId  String?
+  parent    Category?  @relation("CatTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CatTree")
+  listings  Listing[]
+}
+
+model Listing {
+  id               String        @id @default(cuid())
+  ownerId          String
+  owner            User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title            String
+  description      String
+  categoryId       String
+  category         Category      @relation(fields: [categoryId], references: [id])
+  condition        Condition
+  /// Təxmini dəyər (AZN)
+  estimatedValue   Int
+  city             String
+  wantedText       String        @default("")
+  /// İstənilən kateqoriyaların slug-ları
+  wantedCategories String[]      @default([])
+  acceptsCash      Boolean       @default(true)
+  openToAnything   Boolean       @default(false)
+  canShip          Boolean       @default(false)
+  status           ListingStatus @default(ACTIVE)
+  views            Int           @default(0)
+  vipUntil         DateTime?
+  bumpedAt         DateTime      @default(now())
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  images           ListingImage[]
+  favorites        Favorite[]
+  offersTargeting  Offer[]        @relation("OfferTarget")
+  offerItems       OfferItem[]
+  conversations    Conversation[]
+  reports          Report[]
+  swipes           Swipe[]
+
+  @@index([status, bumpedAt])
+  @@index([categoryId, status])
+  @@index([ownerId])
+  @@index([city])
+}
+
+model ListingImage {
+  id        String  @id @default(cuid())
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  url       String
+  thumbUrl  String
+  sortOrder Int     @default(0)
+
+  @@index([listingId])
+}
+
+model Favorite {
+  userId    String
+  listingId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, listingId])
+}
+
+model Swipe {
+  userId    String
+  listingId String
+  liked     Boolean
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, listingId])
+}
+
+model Offer {
+  id             String       @id @default(cuid())
+  listingId      String
+  listing        Listing      @relation("OfferTarget", fields: [listingId], references: [id], onDelete: Cascade)
+  fromUserId     String
+  fromUser       User         @relation("OfferFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId       String
+  toUser         User         @relation("OfferTo", fields: [toUserId], references: [id], onDelete: Cascade)
+  /// Bu təklifi kim irəli sürüb (əks-təklifdə qarşı tərəf). Cavab verən digər tərəfdir.
+  proposerId     String
+  /// Müsbət: təklif edən əlavə pul verir. Mənfi: təklif edən pul istəyir. (AZN)
+  cashAmount     Int          @default(0)
+  message        String       @default("")
+  status         OfferStatus  @default(PENDING)
+  parentOfferId  String?
+  parentOffer    Offer?       @relation("CounterChain", fields: [parentOfferId], references: [id])
+  counters       Offer[]      @relation("CounterChain")
+  fromConfirmed  Boolean      @default(false)
+  toConfirmed    Boolean      @default(false)
+  completedAt    DateTime?
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  items          OfferItem[]
+  reviews        Review[]
+  messages       Message[]
+
+  @@index([fromUserId, status])
+  @@index([toUserId, status])
+  @@index([listingId])
+}
+
+model OfferItem {
+  offerId   String
+  listingId String
+  offer     Offer   @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@id([offerId, listingId])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  listingId     String?
+  listing       Listing?  @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  userAId       String
+  userA         User      @relation("ConvA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId       String
+  userB         User      @relation("ConvB", fields: [userBId], references: [id], onDelete: Cascade)
+  lastMessageAt DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+
+  messages      Message[]
+  offers        Offer[]
+
+  @@unique([userAId, userBId, listingId])
+  @@index([userAId, lastMessageAt])
+  @@index([userBId, lastMessageAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  kind           MessageKind  @default(TEXT)
+  body           String
+  offerId        String?
+  offer          Offer?       @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  targetId  String
+  target    User     @relation("ReviewTarget", fields: [targetId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@unique([offerId, authorId])
+  @@index([targetId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  data      Json      @default("{}")
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        TxType
+  status      TxStatus @default(PENDING)
+  /// Qəpiklə. Müsbət: balansa daxil, mənfi: xərc
+  amount      Int
+  provider    String   @default("wallet")
+  providerRef String?
+  meta        Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([providerRef])
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  reporter   User         @relation("ReportAuthor", fields: [reporterId], references: [id], onDelete: Cascade)
+  listingId  String?
+  listing    Listing?     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?        @relation("ReportTarget", fields: [userId], references: [id], onDelete: Cascade)
+  reason     String
+  details    String       @default("")
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now())
+}
+
+/// Birbaşa satılan reklam bannerləri (sponsorlar)
+model AdBanner {
+  id          String    @id @default(cuid())
+  placement   String
+  title       String
+  imageUrl    String
+  linkUrl     String
+  advertiser  String    @default("")
+  active      Boolean   @default(true)
+  impressions Int       @default(0)
+  clicks      Int       @default(0)
+  startsAt    DateTime  @default(now())
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([placement, active])
+}

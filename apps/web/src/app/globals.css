@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    /* Şriftlər layihənin içindədir (@fontsource) — Azərbaycan (ə), türk və kiril hərflərini dəstəkləyir */
+    --font-display: 'Unbounded Variable';
+    --font-sans: 'Manrope Variable';
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream font-sans text-ink antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    @apply bg-zefran-300 text-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-nar-500 ring-offset-2 ring-offset-cream;
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-5 py-3 text-[15px] font-bold leading-none transition-all duration-150 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-sm {
+    @apply rounded-xl px-3.5 py-2 text-sm;
+  }
+  .btn-lg {
+    @apply rounded-[1.25rem] px-7 py-4 text-base;
+  }
+  /* Oyunvari 3D düymələr */
+  .btn-primary {
+    @apply bg-nar-500 text-white shadow-[0_4px_0_0_theme(colors.nar.700)] hover:-translate-y-0.5 hover:bg-nar-400 hover:shadow-[0_6px_0_0_theme(colors.nar.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.nar.700)];
+  }
+  .btn-dark {
+    @apply bg-ink text-white shadow-[0_4px_0_0_#000] hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_#000] active:translate-y-[3px] active:shadow-[0_1px_0_0_#000];
+  }
+  .btn-teal {
+    @apply bg-xezer-500 text-white shadow-[0_4px_0_0_theme(colors.xezer.700)] hover:-translate-y-0.5 hover:bg-xezer-400 hover:shadow-[0_6px_0_0_theme(colors.xezer.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.xezer.700)];
+  }
+  .btn-gold {
+    @apply bg-zefran-400 text-ink shadow-[0_4px_0_0_theme(colors.zefran.700)] hover:-translate-y-0.5 hover:bg-zefran-300 hover:shadow-[0_6px_0_0_theme(colors.zefran.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.zefran.700)];
+  }
+  .btn-outline {
+    @apply border-2 border-ink/10 bg-white text-ink shadow-[0_3px_0_0_rgba(20,18,31,.12)] hover:-translate-y-0.5 hover:border-ink/20 active:translate-y-[2px] active:shadow-none;
+  }
+  .btn-ghost {
+    @apply text-ink-soft hover:bg-ink/5 hover:text-ink;
+  }
+  .btn-icon {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-xl text-ink-soft transition hover:bg-ink/5 hover:text-ink;
+  }
+
+  .card {
+    @apply rounded-3xl border border-line bg-white shadow-card;
+  }
+
+  .input {
+    @apply block w-full rounded-2xl border-2 border-line bg-white px-4 py-3 text-[15px] text-ink placeholder:text-ink-mute transition focus:border-nar-400 focus:outline-none focus:ring-4 focus:ring-nar-100;
+  }
+  .input-error {
+    @apply border-nar-500 focus:ring-nar-100;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-bold text-ink;
+  }
+  .hint {
+    @apply mt-1.5 text-xs text-ink-mute;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-line bg-white px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition hover:border-ink/20 hover:text-ink;
+  }
+  .chip-active {
+    @apply border-ink bg-ink text-white hover:border-ink hover:text-white;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase leading-none tracking-wide;
+  }
+
+  .section-title {
+    @apply font-display text-2xl font-bold leading-tight sm:text-3xl;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-2xl bg-ink/[.06];
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(rgba(20, 18, 31, 0.09) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-nar-500 via-lale-500 to-xezer-500 bg-clip-text text-transparent;
+  }
+}

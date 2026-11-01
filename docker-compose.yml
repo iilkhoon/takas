@@ -1,0 +1,70 @@
+# Dəyiş — bütün sistemi bir əmrlə işə salmaq üçün:
+#   cp .env.production.example .env && nano .env
+#   docker compose up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: deyis
+      POSTGRES_USER: deyis
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deyis"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://deyis:${DB_PASSWORD}@db:5432/deyis?schema=public
+      PUBLIC_WEB_URL: https://${DOMAIN}
+      PUBLIC_API_URL: https://${DOMAIN}
+      CORS_ORIGINS: https://${DOMAIN},https://www.${DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
+      REFRESH_SECRET: ${REFRESH_SECRET}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      EPOINT_PUBLIC_KEY: ${EPOINT_PUBLIC_KEY:-}
+      EPOINT_PRIVATE_KEY: ${EPOINT_PRIVATE_KEY:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      - uploads:/data/uploads
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_URL: http://api:4000
+        NEXT_PUBLIC_SITE_URL: https://${DOMAIN}
+        NEXT_PUBLIC_ADSENSE_CLIENT: ${ADSENSE_CLIENT:-}
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      API_URL: http://api:4000
+
+  # Caddy — avtomatik pulsuz SSL (Let's Encrypt) və reverse proxy
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [web, api]
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  uploads:
+  caddy_data:
+  caddy_config:
