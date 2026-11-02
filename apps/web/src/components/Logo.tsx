@@ -1,24 +1,26 @@
 import clsx from 'clsx';
 
+/** Neobrutal loqo nişanı: sarı kvadrat, qalın qara kontur, sərt kölgə, takas oxları */
 export function LogoMark({ className, spin }: { className?: string; spin?: boolean }) {
   return (
-    <svg viewBox="0 0 48 48" className={clsx('shrink-0', className)} aria-hidden>
-      <rect width="48" height="48" rx="14" fill="#E8334A" />
+    <svg viewBox="0 0 48 48" className={clsx('shrink-0 overflow-visible', className)} aria-hidden>
+      <rect x="4" y="4" width="42" height="42" rx="9" fill="#0B0B0F" />
+      <rect x="1.5" y="1.5" width="42" height="42" rx="9" fill="#FFDB1F" stroke="#0B0B0F" strokeWidth="3" />
       <g
         fill="none"
-        stroke="#fff"
+        stroke="#0B0B0F"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={clsx(spin && 'origin-center transition-transform duration-700 group-hover:rotate-180')}
+        className={clsx(spin && 'origin-center transition-transform duration-500 group-hover:rotate-180')}
         style={{ transformBox: 'fill-box' }}
       >
-        <path d="M13.5 21.5A11 11 0 0 1 33 16" />
-        <path d="M33 9.5V16h-6.5" />
-        <path d="M34.5 26.5A11 11 0 0 1 15 32" />
-        <path d="M15 38.5V32h6.5" />
+        <path d="M11.5 20A11 11 0 0 1 31 14.5" />
+        <path d="M31 8v6.5h-6.5" />
+        <path d="M33.5 25A11 11 0 0 1 14 30.5" />
+        <path d="M14 37v-6.5h6.5" />
       </g>
-      <circle cx="24" cy="24" r="3.2" fill="#FFC21F" />
+      <circle cx="22.5" cy="22.5" r="3.4" fill="#FF2E63" stroke="#0B0B0F" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -28,8 +30,8 @@ export function Logo({ className, light }: { className?: string; light?: boolean
   return (
     <span className={clsx('group inline-flex items-center gap-2', className)}>
       <LogoMark className="h-9 w-9" spin />
-      <span className={clsx('font-display text-[1.6rem] font-black leading-none tracking-tight', light ? 'text-white' : 'text-ink')}>
-        d<span className="text-nar-500">ə</span>yiş
+      <span className={clsx('font-display text-[1.65rem] font-black leading-none tracking-tight', light ? 'text-white' : 'text-ink')}>
+        d<span className={light ? 'text-zefran-400' : 'text-nar-500'}>ə</span>yiş
       </span>
     </span>
   );

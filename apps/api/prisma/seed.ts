@@ -91,30 +91,68 @@ const LISTINGS: Demo[] = [
   [0, 'phones', 'mobile_phone', 'Samsung Galaxy S22 Ultra 256GB', 'S Pen ilə. Ekranda kiçik bir cızıq var. Qutusu var.', 'GOOD', 980, 'iPhone 14 (fərqi nağd verərəm) və ya kamera', ['phones', 'photo-tv'], true, false],
 ];
 
+// Demo mağazalar: [ad, slug, email, şəhər, şüar, təsvir, rəng, kateqoriyalar, ünvan, saatlar, instagram]
+const STORES: [string, string, string, string, string, string, string, string[], string, string, string][] = [
+  [
+    'TexnoBazar Bakı', 'texnobazar', 'texnobazar@demo.az', 'baku',
+    'Köhnə telefonunu gətir — yenisini apar!',
+    'Telefon, noutbuk və oyun konsollarının trade-in mərkəzi. Köhnə cihazınızı qiymətləndirib fərqi ilə yenisinə dəyişirik. Bütün məhsullara 3 ay zəmanət.',
+    '#3D5AFE', ['phones', 'computers', 'gaming', 'electronics'], 'Nərimanov r., Təbriz küç. 44', 'Hər gün 10:00–21:00', 'texnobazar.az',
+  ],
+  [
+    'Balaca Dünya', 'balaca-dunya', 'balaca@demo.az', 'baku',
+    'Uşaq böyüyür — əşyalar dəyişir',
+    'İşlənmiş uşaq arabaları, oyuncaqlar və geyimlərin takas mağazası. Gətirdiyiniz əşyanı yoxlayıb başqası ilə başa baş dəyişirik.',
+    '#FF2E63', ['kids', 'fashion'], 'Yasamal r., Şərifzadə küç. 12', 'B.e–Ş 10:00–19:00', 'balacadunya',
+  ],
+  [
+    'Kitabevi 28', 'kitabevi-28', 'kitabevi@demo.az', 'ganja',
+    'Oxuduğunu gətir, yenisini oxu',
+    'Gəncənin ən böyük ikinci əl kitab mağazası. 2 kitab gətirin — 1 kitab seçin. Abituriyent vəsaitləri də var.',
+    '#00BF78', ['books', 'hobby'], 'Gəncə, Atatürk pr. 28', 'Hər gün 09:00–20:00', 'kitabevi28',
+  ],
+];
+
+// [mağaza indeksi, kateqoriya, emoji, başlıq, təsvir, vəziyyət, dəyər, istədikləri, kateqoriyalar, takas növü, üstə məbləğ]
+type StoreDemo = [number, string, string, string, string, Condition, number, string, string[], 'ANY' | 'EVEN' | 'PAY_EXTRA' | 'WANT_EXTRA', number];
+const STORE_LISTINGS: StoreDemo[] = [
+  [0, 'phones', 'mobile_phone', 'iPhone 15 Pro 128GB — trade-in', 'Yeni, qutuda, rəsmi zəmanət. Köhnə iPhone-unuzu gətirin, qiymətləndirək, fərqi ödəyin.', 'NEW', 2300, 'İstənilən iPhone 11–14 + fərq', ['phones'], 'WANT_EXTRA', 900],
+  [0, 'gaming', 'video_game', 'PS5 Slim + 2 oyun', 'Yeni PS5 Slim. PS4 + oyunlarınızı gətirin, fərqi ödəyib PS5 aparın.', 'NEW', 1150, 'PS4 / PS4 Pro + disklər', ['gaming'], 'WANT_EXTRA', 550],
+  [0, 'computers', 'laptop', 'MacBook Air M2 — köhnə noutbukla dəyişək', 'Yaxşı vəziyyətdə, batareya 94%. Windows noutbukunuzu gətirin.', 'LIKE_NEW', 1650, 'Windows noutbuk + fərq', ['computers'], 'WANT_EXTRA', 600],
+  [0, 'electronics', 'headphone', 'AirPods Pro 2 — başa baş', 'Orijinal, yeni. Eyni dəyərdə smart saat və ya qulaqlıqla başa baş dəyişirik.', 'NEW', 380, 'Apple Watch, Galaxy Watch', ['accessories', 'electronics'], 'EVEN', 0],
+  [0, 'phones', 'mobile_phone', 'Köhnə telefonunuzu alırıq — üstünə pul veririk', 'Samsung A-seriyası yeni telefon. İşlək flaqman telefon gətirsəniz, üstünə biz pul veririk!', 'NEW', 450, 'Flaqman telefon (S21+, iPhone 12+)', ['phones'], 'PAY_EXTRA', 150],
+  [1, 'kids', 'baby_bottle', 'Uşaq arabası Cybex — başa baş', 'Təmizlənib, yoxlanılıb. Uşaq oturacağı və ya beşiklə başa baş dəyişirik.', 'GOOD', 320, 'Avto oturacaq, beşik', ['kids', 'home'], 'EVEN', 0],
+  [1, 'kids', 'teddy_bear', 'Oyuncaq qutusu (25 əşya) — 3 oyuncaq gətir', 'Hər yaş üçün. 3 təmiz oyuncaq gətirin, qutunu aparın.', 'GOOD', 60, 'İstənilən oyuncaqlar', ['kids'], 'EVEN', 0],
+  [1, 'fashion', 't-shirt', 'Uşaq geyimləri 3–5 yaş (paket)', '20 ədəd, mövsümə uyğun. Kiçik ölçülərlə dəyişirik.', 'GOOD', 90, 'Uşaq geyimləri 0–2 yaş', ['fashion', 'kids'], 'ANY', 0],
+  [2, 'books', 'books', 'Dünya klassikası — 10 kitab', '2 kitab gətirin, 1 kitab seçin qaydası ilə. Bu dəst bütöv dəyişilir.', 'GOOD', 80, 'İstənilən bədii kitablar', ['books'], 'EVEN', 0],
+  [2, 'books', 'graduation_cap', 'Abituriyent dəsti 2026 (riyaziyyat, fizika)', 'Son nəşr test topluları. Köhnə nəşrlərinizi gətirin + fərq.', 'NEW', 70, 'Köhnə abituriyent kitabları', ['books'], 'WANT_EXTRA', 20],
+];
+
 async function makeDemoImage(emoji: string, color: string, variant: number) {
   const now = new Date();
   const sub = `listings/${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;
   const dir = path.join(UPLOAD_DIR, sub);
   await fs.mkdir(dir, { recursive: true });
   const id = `demo_${emoji}_${variant}_${Math.random().toString(36).slice(2, 8)}`;
-  const angle = [135, 160, 110][variant % 3];
+  // Neobrutal üslub: düz pastel fon, tor xətləri, qara konturlu dairə və sərt kölgə
+  const hex = color.replace('#', '');
+  const [r, g, b] = [0, 2, 4].map((o) => parseInt(hex.slice(o, o + 2), 16));
+  const mix = (c: number, k: number) => Math.round(c + (255 - c) * k);
+  const pastel = `rgb(${mix(r, 0.72)},${mix(g, 0.72)},${mix(b, 0.72)})`;
+  const tone = `rgb(${mix(r, 0.35)},${mix(g, 0.35)},${mix(b, 0.35)})`;
+  const cx = [600, 560, 640][variant % 3];
   const bg = Buffer.from(`
     <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900">
       <defs>
-        <linearGradient id="g" gradientTransform="rotate(${angle - 90} .5 .5)">
-          <stop offset="0" stop-color="${color}" stop-opacity="0.16"/>
-          <stop offset="1" stop-color="${color}" stop-opacity="0.42"/>
-        </linearGradient>
-        <radialGradient id="s" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stop-color="#14121F" stop-opacity=".28"/>
-          <stop offset="1" stop-color="#14121F" stop-opacity="0"/>
-        </radialGradient>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0H0V60" fill="none" stroke="#0B0B0F" stroke-opacity=".08" stroke-width="3"/>
+        </pattern>
       </defs>
-      <rect width="1200" height="900" fill="#FFF8F1"/>
-      <rect width="1200" height="900" fill="url(#g)"/>
-      <circle cx="${variant % 2 ? 980 : 220}" cy="${variant % 2 ? 160 : 760}" r="230" fill="${color}" fill-opacity=".14"/>
-      <circle cx="600" cy="450" r="300" fill="#FFFFFF" fill-opacity=".55"/>
-      <ellipse cx="600" cy="745" rx="230" ry="34" fill="url(#s)"/>
+      <rect width="1200" height="900" fill="${pastel}"/>
+      <rect width="1200" height="900" fill="url(#grid)"/>
+      <rect x="${variant % 2 ? 900 : 70}" y="${variant % 2 ? 80 : 640}" width="220" height="180" rx="18" fill="${tone}" stroke="#0B0B0F" stroke-width="8" transform="rotate(${variant % 2 ? 12 : -10} 1000 170)"/>
+      <circle cx="${cx + 22}" cy="472" r="290" fill="#0B0B0F"/>
+      <circle cx="${cx}" cy="450" r="290" fill="#FFFFFF" stroke="#0B0B0F" stroke-width="10"/>
     </svg>`);
   const emojiBuf = await sharp(path.join(EMOJI_DIR, `${emoji}.png`))
     .resize(520, 520, { kernel: 'lanczos3' })
@@ -123,7 +161,7 @@ async function makeDemoImage(emoji: string, color: string, variant: number) {
     .toBuffer();
   const meta = await sharp(emojiBuf).metadata();
   const full = await sharp(bg)
-    .composite([{ input: emojiBuf, left: Math.round(600 - (meta.width ?? 520) / 2), top: Math.round(440 - (meta.height ?? 520) / 2) }])
+    .composite([{ input: emojiBuf, left: Math.round(cx - (meta.width ?? 520) / 2), top: Math.round(445 - (meta.height ?? 520) / 2) }])
     .webp({ quality: 84 })
     .toBuffer();
   await fs.writeFile(path.join(dir, `${id}.webp`), full);
@@ -211,6 +249,8 @@ async function main() {
         wantedText,
         wantedCategories,
         acceptsCash,
+        swapType: !acceptsCash ? 'EVEN' : (['ANY', 'WANT_EXTRA', 'ANY', 'PAY_EXTRA'] as const)[i % 4],
+        extraCash: !acceptsCash || i % 2 === 0 ? 0 : Math.round((value * 0.15) / 10) * 10,
         openToAnything,
         canShip: i % 3 === 0,
         views: 20 + ((i * 37) % 400),
@@ -222,7 +262,52 @@ async function main() {
     });
     process.stdout.write('.');
   }
-  console.log('\nHazırdır! Demo giriş: elvin@demo.az / Demo12345!');
+  console.log('\nMağazalar…');
+  for (const [i, [name, slug, email, city, tagline, description, coverColor, categories, address, hours, instagram]] of STORES.entries()) {
+    const owner = await prisma.user.create({
+      data: {
+        name,
+        email,
+        city,
+        passwordHash: hash,
+        referralCode: refCode(),
+        phoneVerified: true,
+        completedTrades: [48, 23, 61][i],
+        ratingSum: [230, 110, 300][i],
+        ratingCount: [48, 23, 61][i],
+        store: { create: { name, slug, city, tagline, description, coverColor, categories, address, hours, instagram, phone: '+994 12 555 00 0' + i, verified: i !== 1 } },
+      },
+    });
+    for (const [k, l] of STORE_LISTINGS.filter((x) => x[0] === i).entries()) {
+      const [, catSlug, emoji, title, desc, condition, value, wantedText, wantedCategories, swapType, extraCash] = l;
+      const cat = cats.get(catSlug)!;
+      const images = [];
+      for (let v = 0; v < 2; v++) images.push(await makeDemoImage(emoji, cat.color, v));
+      await prisma.listing.create({
+        data: {
+          ownerId: owner.id,
+          title,
+          description: desc,
+          categoryId: cat.id,
+          condition,
+          estimatedValue: value,
+          city,
+          wantedText,
+          wantedCategories,
+          swapType,
+          extraCash,
+          acceptsCash: swapType !== 'EVEN',
+          canShip: true,
+          views: 80 + k * 31,
+          vipUntil: k === 0 ? new Date(Date.now() + 6 * 864e5) : null,
+          bumpedAt: new Date(Date.now() - (k * 5 + i * 2) * 60 * 60 * 1000 - 30 * 60 * 1000),
+          images: { create: images.map((im, n) => ({ ...im, sortOrder: n })) },
+        },
+      });
+      process.stdout.write('.');
+    }
+  }
+  console.log('\nHazırdır! Demo giriş: elvin@demo.az / Demo12345! · Mağaza: texnobazar@demo.az / Demo12345!');
 }
 
 main()

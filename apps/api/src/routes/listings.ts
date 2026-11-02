@@ -30,6 +30,9 @@ const searchSchema = z.object({
   acceptsCash: z.enum(['1', '0']).optional(),
   canShip: z.enum(['1', '0']).optional(),
   owner: z.string().max(40).optional(),
+  swapType: z.enum(['ANY', 'EVEN', 'PAY_EXTRA', 'WANT_EXTRA']).optional(),
+  seller: z.enum(['store', 'person']).optional(),
+  store: z.string().max(60).optional(),
   sort: z.enum(['new', 'value_asc', 'value_desc', 'popular']).default('new'),
 });
 
@@ -63,6 +66,10 @@ router.get('/', async (req, res) => {
   if (f.wants) and.push({ OR: [{ wantedCategories: { has: f.wants } }, { openToAnything: true }] });
   if (f.acceptsCash === '1') where.acceptsCash = true;
   if (f.canShip === '1') where.canShip = true;
+  if (f.swapType) where.swapType = f.swapType;
+  if (f.seller === 'store') where.owner = { store: { is: { active: true } } };
+  if (f.seller === 'person') where.owner = { store: { is: null } };
+  if (f.store) where.owner = { store: { is: { slug: f.store, active: true } } };
 
   const orderBy: Prisma.ListingOrderByWithRelationInput[] =
     f.sort === 'value_asc'
@@ -293,6 +300,8 @@ router.get('/:id', async (req, res) => {
       wantedText: l.wantedText,
       wantedCategories: wantedCats.map(category),
       acceptsCash: l.acceptsCash,
+      swapType: l.swapType,
+      extraCash: l.extraCash,
       openToAnything: l.openToAnything,
       canShip: l.canShip,
       status: l.status,
@@ -328,16 +337,28 @@ const listingSchema = z.object({
   city: z.enum(CITY_SLUGS as [string, ...string[]]),
   wantedText: z.string().trim().max(300).default(''),
   wantedCategories: z.array(z.string().max(60)).max(8).default([]),
-  acceptsCash: z.boolean().default(true),
+  swapType: z.enum(['ANY', 'EVEN', 'PAY_EXTRA', 'WANT_EXTRA']).default('ANY'),
+  extraCash: z.coerce.number().int().min(0).max(1_000_000).default(0),
   openToAnything: z.boolean().default(false),
   canShip: z.boolean().default(false),
   images: z.array(imageSchema).min(1).max(10),
 });
 
+/** Takas növündən pul sahələrini çıxarır. Başa baş = pul fərqi qəbul edilmir. */
+function swapFields(body: { swapType: 'ANY' | 'EVEN' | 'PAY_EXTRA' | 'WANT_EXTRA'; extraCash: number }) {
+  return {
+    swapType: body.swapType,
+    acceptsCash: body.swapType !== 'EVEN',
+    extraCash: body.swapType === 'PAY_EXTRA' || body.swapType === 'WANT_EXTRA' ? body.extraCash : 0,
+  };
+}
+
 async function activeLimit(uid: string) {
-  const u = await prisma.user.findUniqueOrThrow({ where: { id: uid } });
+  const u = await prisma.user.findUniqueOrThrow({ where: { id: uid }, include: { store: true } });
   const plus = u.plan === 'PLUS' && (!u.planUntil || u.planUntil > new Date());
-  return plus ? pricing.plusActiveListings : pricing.freeActiveListings;
+  if (plus) return pricing.plusActiveListings;
+  if (u.store?.active) return pricing.storeActiveListings;
+  return pricing.freeActiveListings;
 }
 
 router.post('/', requireAuth, async (req, res) => {
@@ -363,7 +384,7 @@ router.post('/', requireAuth, async (req, res) => {
       city: body.city,
       wantedText: body.wantedText,
       wantedCategories: body.wantedCategories,
-      acceptsCash: body.acceptsCash,
+      ...swapFields(body),
       openToAnything: body.openToAnything,
       canShip: body.canShip,
       images: { create: body.images.map((im, i) => ({ ...im, sortOrder: i })) },
@@ -415,7 +436,7 @@ router.put('/:id', requireAuth, async (req, res) => {
         city: body.city,
         wantedText: body.wantedText,
         wantedCategories: body.wantedCategories,
-        acceptsCash: body.acceptsCash,
+        ...swapFields(body),
         openToAnything: body.openToAnything,
         canShip: body.canShip,
         status: l.status === 'REJECTED' ? 'ACTIVE' : l.status,

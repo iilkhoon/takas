@@ -21,13 +21,11 @@ export function AuthShell({ title, sub, children }: { title: string; sub: string
         transition={{ delay: 0.1 }}
         className="relative hidden overflow-hidden rounded-4xl bg-ink p-10 text-white lg:block"
       >
-        <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-nar-500/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-10 h-80 w-80 rounded-full bg-xezer-500/30 blur-3xl" />
         <div className="relative grid grid-cols-3 gap-4">
           {['mobile_phone', 'video_game', 'guitar', 'bicycle', 'books', 'camera', 'teddy_bear', 'watch', 'laptop'].map((e, i) => (
             <motion.div
               key={e}
-              className="flex aspect-square items-center justify-center rounded-3xl bg-white/10 backdrop-blur"
+              className="flex aspect-square items-center justify-center rounded-2xl border-[2.5px] border-white/80 bg-white/10"
               animate={{ y: [0, i % 2 ? -8 : 8, 0] }}
               transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: 'easeInOut' }}
             >

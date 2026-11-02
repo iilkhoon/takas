@@ -2,6 +2,7 @@ export type Locale = 'az' | 'en' | 'tr' | 'ru';
 export type Condition = 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR' | 'FOR_PARTS';
 export type ListingStatus = 'ACTIVE' | 'RESERVED' | 'TRADED' | 'ARCHIVED' | 'PENDING_REVIEW' | 'REJECTED';
 export type OfferStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED' | 'COUNTERED' | 'COMPLETED';
+export type SwapType = 'ANY' | 'EVEN' | 'PAY_EXTRA' | 'WANT_EXTRA';
 export type Level = 'newbie' | 'starter' | 'trader' | 'master' | 'legend';
 
 export interface Category {
@@ -29,6 +30,35 @@ export interface PublicUser {
   bio?: string | null;
   activeListings?: number;
   tradedItems?: number;
+  store: StoreTagInfo | null;
+}
+
+export interface StoreTagInfo {
+  slug: string;
+  name: string;
+  logoUrl?: string | null;
+  verified: boolean;
+}
+
+export interface Store {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  logoUrl: string | null;
+  coverColor: string;
+  city: string;
+  address: string;
+  phone: string;
+  instagram: string;
+  website: string;
+  hours: string;
+  categories: string[];
+  verified: boolean;
+  createdAt: string;
+  active?: boolean;
+  tradedItems?: number;
 }
 
 export interface Me {
@@ -53,6 +83,7 @@ export interface Me {
   level: Level;
   referralCode: string;
   createdAt: string;
+  store?: StoreTagInfo | null;
 }
 
 export interface Image {
@@ -70,6 +101,8 @@ export interface ListingCard {
   wantedText: string;
   wantedCategories: string[];
   acceptsCash: boolean;
+  swapType: SwapType;
+  extraCash: number;
   openToAnything: boolean;
   canShip: boolean;
   status: ListingStatus;
@@ -154,6 +187,7 @@ export interface Pricing {
   vipDays: number;
   plusMonthly: number;
   plusMonthlyBoosts: number;
+  storeActiveListings: number;
   loyaltyEvery: number;
   referralBoosts: number;
   welcomeBoosts: number;

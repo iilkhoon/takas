@@ -75,7 +75,7 @@ export default function PricingPage() {
           <Link href="/listings/new" className="btn btn-outline mt-8 w-full">{tn('post')}</Link>
         </div>
 
-        <div className="relative flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-lale-500 to-lale-700 p-8 text-white shadow-lift">
+        <div className="relative flex flex-col overflow-hidden rounded-3xl border-[2.5px] border-ink bg-lale-500 shadow-card p-8 text-white shadow-lift">
           <span className="badge absolute right-5 top-5 bg-zefran-400 text-ink">{t('popular')}</span>
           <h2 className="flex items-center gap-2 font-display text-xl font-bold">
             <Gem className="h-5 w-5" /> {t('plusTitle')}
@@ -103,7 +103,7 @@ export default function PricingPage() {
       <h2 className="section-title mt-16 text-center">{t('boostsTitle')}</h2>
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {[
-          { icon: Rocket, title: t('bumpTitle'), desc: t('bumpDesc'), price: p?.bump, c: 'bg-xezer-50 text-xezer-600' },
+          { icon: Rocket, title: t('bumpTitle'), desc: t('bumpDesc'), price: p?.bump, c: 'bg-xezer-100 text-xezer-600' },
           { icon: Sparkles, title: t('vipTitle'), desc: t('vipDesc', { days: p?.vipDays ?? 7 }), price: p?.vip7, c: 'bg-zefran-100 text-zefran-700' },
         ].map((s) => (
           <div key={s.title} className="card flex items-center gap-5 p-6">

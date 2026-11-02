@@ -44,7 +44,7 @@ export function AdSlot({ placement, className }: { placement: Placement; classNa
 
   if (data?.ad) {
     return (
-      <a href={`/api/v1/ads/${data.ad.id}/click`} target="_blank" rel="noopener sponsored" className={clsx('group relative block overflow-hidden rounded-3xl border border-line', className)}>
+      <a href={`/api/v1/ads/${data.ad.id}/click`} target="_blank" rel="noopener sponsored" className={clsx('group relative block overflow-hidden rounded-3xl border-[2.5px] border-ink', className)}>
         <img src={data.ad.imageUrl} alt={data.ad.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" />
         <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-ink-mute">{tc('sponsored')}</span>
       </a>
@@ -63,7 +63,7 @@ export function AdSlot({ placement, className }: { placement: Placement; classNa
     <Link
       href="/advertise"
       className={clsx(
-        'group flex items-center gap-4 rounded-3xl border-2 border-dashed border-ink/10 bg-gradient-to-r from-zefran-50 via-white to-lale-50 px-5 py-5 transition hover:border-zefran-400',
+        'group flex items-center gap-4 rounded-3xl border-[2.5px] border-dashed border-ink bg-zefran-100 px-5 py-5 transition hover:border-zefran-400',
         className,
       )}
     >

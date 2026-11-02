@@ -2,12 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Dəyiş — NEOBRUTALİZM dizayn sistemi
+ * Qalın qara konturlar, sərt kölgələr, parlaq düz rənglər, cəsarətli tipoqrafiya.
+ */
+
 @layer base {
   :root {
     color-scheme: light;
-    /* Şriftlər layihənin içindədir (@fontsource) — Azərbaycan (ə), türk və kiril hərflərini dəstəkləyir */
-    --font-display: 'Unbounded Variable';
-    --font-sans: 'Manrope Variable';
+    /* Şriftlər layihənin içindədir (@fontsource) — ə, ş, ğ, ı və kiril hərflərini dəstəkləyir */
+    --font-display: 'Geologica Variable';
+    --font-sans: 'Onest Variable';
+    --font-mono: 'JetBrains Mono Variable';
   }
   html {
     -webkit-tap-highlight-color: transparent;
@@ -15,16 +21,19 @@
   }
   body {
     @apply bg-cream font-sans text-ink antialiased;
-    font-feature-settings: 'ss01', 'cv11';
   }
   h1, h2, h3 {
     @apply font-display tracking-tight;
+    font-weight: 800;
+  }
+  h1 {
+    font-weight: 900;
   }
   ::selection {
-    @apply bg-zefran-300 text-ink;
+    @apply bg-zefran-400 text-ink;
   }
   :focus-visible {
-    @apply outline-none ring-2 ring-nar-500 ring-offset-2 ring-offset-cream;
+    @apply outline-none ring-[3px] ring-lale-500 ring-offset-2 ring-offset-cream;
   }
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
@@ -34,72 +43,78 @@
 }
 
 @layer components {
+  /* ---------- Düymələr: qalın kontur + sərt kölgə, basanda "yerə oturur" ---------- */
   .btn {
-    @apply relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-5 py-3 text-[15px] font-bold leading-none transition-all duration-150 disabled:pointer-events-none disabled:opacity-50;
+    @apply relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-xl border-[2.5px] border-ink px-5 py-3 text-[15px] font-extrabold leading-none shadow-[4px_4px_0_0_#0B0B0F] transition-all duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#0B0B0F] active:translate-x-1 active:translate-y-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-sm {
-    @apply rounded-xl px-3.5 py-2 text-sm;
+    @apply rounded-lg px-3.5 py-2 text-sm shadow-[3px_3px_0_0_#0B0B0F] hover:shadow-[4px_4px_0_0_#0B0B0F];
   }
   .btn-lg {
-    @apply rounded-[1.25rem] px-7 py-4 text-base;
+    @apply rounded-2xl px-7 py-4 text-base;
   }
-  /* Oyunvari 3D düymələr */
   .btn-primary {
-    @apply bg-nar-500 text-white shadow-[0_4px_0_0_theme(colors.nar.700)] hover:-translate-y-0.5 hover:bg-nar-400 hover:shadow-[0_6px_0_0_theme(colors.nar.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.nar.700)];
+    @apply bg-nar-500 text-white;
   }
   .btn-dark {
-    @apply bg-ink text-white shadow-[0_4px_0_0_#000] hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_#000] active:translate-y-[3px] active:shadow-[0_1px_0_0_#000];
+    @apply bg-ink text-white;
   }
   .btn-teal {
-    @apply bg-xezer-500 text-white shadow-[0_4px_0_0_theme(colors.xezer.700)] hover:-translate-y-0.5 hover:bg-xezer-400 hover:shadow-[0_6px_0_0_theme(colors.xezer.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.xezer.700)];
+    @apply bg-xezer-400 text-ink;
   }
   .btn-gold {
-    @apply bg-zefran-400 text-ink shadow-[0_4px_0_0_theme(colors.zefran.700)] hover:-translate-y-0.5 hover:bg-zefran-300 hover:shadow-[0_6px_0_0_theme(colors.zefran.700)] active:translate-y-[3px] active:shadow-[0_1px_0_0_theme(colors.zefran.700)];
+    @apply bg-zefran-400 text-ink;
+  }
+  .btn-blue {
+    @apply bg-lale-500 text-white;
   }
   .btn-outline {
-    @apply border-2 border-ink/10 bg-white text-ink shadow-[0_3px_0_0_rgba(20,18,31,.12)] hover:-translate-y-0.5 hover:border-ink/20 active:translate-y-[2px] active:shadow-none;
+    @apply bg-white text-ink;
   }
   .btn-ghost {
-    @apply text-ink-soft hover:bg-ink/5 hover:text-ink;
+    @apply border-transparent bg-transparent text-ink shadow-none hover:translate-x-0 hover:translate-y-0 hover:border-ink hover:bg-white hover:shadow-[3px_3px_0_0_#0B0B0F] active:translate-x-0 active:translate-y-0 active:shadow-none;
   }
   .btn-icon {
-    @apply inline-flex h-10 w-10 items-center justify-center rounded-xl text-ink-soft transition hover:bg-ink/5 hover:text-ink;
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-transparent text-ink transition hover:border-ink hover:bg-white hover:shadow-[2px_2px_0_0_#0B0B0F];
   }
 
+  /* ---------- Kartlar ---------- */
   .card {
-    @apply rounded-3xl border border-line bg-white shadow-card;
+    @apply rounded-3xl border-[2.5px] border-ink bg-white shadow-card;
   }
 
+  /* ---------- Formalar ---------- */
   .input {
-    @apply block w-full rounded-2xl border-2 border-line bg-white px-4 py-3 text-[15px] text-ink placeholder:text-ink-mute transition focus:border-nar-400 focus:outline-none focus:ring-4 focus:ring-nar-100;
+    @apply block w-full rounded-xl border-[2.5px] border-ink bg-white px-4 py-3 text-[15px] font-medium text-ink placeholder:text-ink-mute transition focus:shadow-[4px_4px_0_0_#0B0B0F] focus:outline-none;
   }
   .input-error {
-    @apply border-nar-500 focus:ring-nar-100;
+    @apply border-nar-500 bg-nar-50;
   }
   .label {
-    @apply mb-1.5 block text-sm font-bold text-ink;
+    @apply mb-1.5 block font-mono text-xs font-bold uppercase tracking-wide text-ink;
   }
   .hint {
     @apply mt-1.5 text-xs text-ink-mute;
   }
 
+  /* ---------- Çiplər ---------- */
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-line bg-white px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition hover:border-ink/20 hover:text-ink;
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-3.5 py-1.5 text-sm font-bold text-ink transition hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#0B0B0F];
   }
   .chip-active {
-    @apply border-ink bg-ink text-white hover:border-ink hover:text-white;
+    @apply bg-ink text-white hover:text-white;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase leading-none tracking-wide;
+    @apply inline-flex items-center gap-1 rounded-md border-2 border-ink px-2 py-0.5 font-mono text-[10.5px] font-bold uppercase leading-[1.35] tracking-wide;
   }
 
   .section-title {
-    @apply font-display text-2xl font-bold leading-tight sm:text-3xl;
+    @apply font-display text-2xl font-black leading-tight sm:text-4xl;
   }
 
   .skeleton {
-    @apply relative overflow-hidden rounded-2xl bg-ink/[.06];
+    @apply relative overflow-hidden rounded-2xl border-2 border-ink/10 bg-ink/[.06];
   }
   .skeleton::after {
     content: '';
@@ -113,11 +128,10 @@
     display: none;
   }
 
+  /* Dəftər vərəqi kimi tor fon */
   .bg-dots {
-    background-image: radial-gradient(rgba(20, 18, 31, 0.09) 1px, transparent 1px);
-    background-size: 18px 18px;
-  }
-  .text-gradient {
-    @apply bg-gradient-to-r from-nar-500 via-lale-500 to-xezer-500 bg-clip-text text-transparent;
+    background-image: linear-gradient(rgba(11, 11, 15, 0.07) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(11, 11, 15, 0.07) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
   }
 }

@@ -80,7 +80,7 @@ export default function NotificationsPage() {
                   onClick={() => !n.readAt && api('/notifications/read', { method: 'POST', body: { ids: [n.id] } }).then(() => refresh())}
                   className={clsx('flex items-center gap-4 rounded-3xl border p-4 transition hover:shadow-card', n.readAt ? 'border-line bg-white/60' : 'border-nar-200 bg-white')}
                 >
-                  <span className={clsx('flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl', n.readAt ? 'bg-cream' : 'bg-nar-50')}>
+                  <span className={clsx('flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl', n.readAt ? 'bg-cream' : 'bg-nar-100')}>
                     <Emoji name={ICON[n.type] ?? 'bell'} size={30} />
                   </span>
                   <div className="min-w-0 flex-1">

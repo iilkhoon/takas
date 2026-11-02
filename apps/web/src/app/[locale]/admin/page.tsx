@@ -14,9 +14,10 @@ import { EmptyState, Skeleton } from '@/components/ui';
 import { Select } from '@/components/Select';
 import type { ListingCard, Me } from '@/lib/types';
 
-type Tab = 'stats' | 'reports' | 'listings' | 'users' | 'ads';
+type Tab = 'stats' | 'reports' | 'listings' | 'users' | 'stores' | 'ads';
 
-interface Stats { users: number; usersWeek: number; listings: number; listingsDay: number; offers: number; completed: number; openReports: number; revenue: number; plus: number }
+interface AdminStore { id: string; slug: string; name: string; city: string; verified: boolean; active: boolean; createdAt: string; owner: { id: string; name: string; email: string } }
+interface Stats { stores?: number; users: number; usersWeek: number; listings: number; listingsDay: number; offers: number; completed: number; openReports: number; revenue: number; plus: number }
 interface Report { id: string; reason: string; details: string; createdAt: string; reporter: { id: string; name: string }; listing: { id: string; title: string; status: string } | null; user: { id: string; name: string } | null }
 interface Ad { id: string; placement: string; title: string; imageUrl: string; linkUrl: string; advertiser: string; active: boolean; impressions: number; clicks: number }
 
@@ -34,6 +35,7 @@ export default function AdminPage() {
   const reports = useSWR<{ items: Report[] }>(staff && tab === 'reports' ? '/admin/reports' : null);
   const listings = useSWR<{ items: ListingCard[] }>(staff && tab === 'listings' ? `/admin/listings?q=${encodeURIComponent(q)}` : null);
   const users = useSWR<{ items: (Me & { isBanned: boolean })[] }>(staff && tab === 'users' ? `/admin/users?q=${encodeURIComponent(q)}` : null);
+  const stores = useSWR<{ items: AdminStore[] }>(staff && tab === 'stores' ? '/admin/stores' : null);
   const ads = useSWR<{ items: Ad[] }>(staff && tab === 'ads' ? '/admin/ads' : null);
   const [ad, setAd] = useState({ placement: 'home_top', title: '', imageUrl: '', linkUrl: '', advertiser: '' });
 
@@ -54,7 +56,7 @@ export default function AdminPage() {
     <div className="container py-6 md:py-10">
       <h1 className="font-display text-3xl font-black">{t('title')}</h1>
       <div className="mt-6 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {(['stats', 'reports', 'listings', 'users', 'ads'] as Tab[]).map((k) => (
+        {(['stats', 'reports', 'listings', 'users', 'stores', 'ads'] as Tab[]).map((k) => (
           <button key={k} onClick={() => { setTab(k); setQ(''); }} className={clsx('chip shrink-0', tab === k && 'chip-active')}>
             {t(k)}
           </button>
@@ -78,6 +80,7 @@ export default function AdminPage() {
                 [t('completed'), stats.data.completed],
                 [t('openReports'), stats.data.openReports],
                 [t('plus'), stats.data.plus],
+                [t('stores'), stats.data.stores ?? 0],
                 [t('revenue'), formatQepik(stats.data.revenue, locale)],
               ].map(([k, v]) => (
                 <div key={String(k)} className="card p-5">
@@ -119,7 +122,7 @@ export default function AdminPage() {
           ))}
 
         {tab === 'listings' && (
-          <div className="card divide-y divide-line">
+          <div className="card divide-y-2 divide-ink/10">
             {listings.data?.items.map((l) => (
               <div key={l.id} className="flex items-center gap-3 p-3">
                 <img src={l.image?.thumbUrl} alt="" className="h-12 w-12 rounded-xl bg-cream object-cover" />
@@ -138,7 +141,7 @@ export default function AdminPage() {
         )}
 
         {tab === 'users' && (
-          <div className="card divide-y divide-line">
+          <div className="card divide-y-2 divide-ink/10">
             {users.data?.items.map((u) => (
               <div key={u.id} className="flex flex-wrap items-center gap-3 p-3">
                 <div className="min-w-0 flex-1">
@@ -151,6 +154,32 @@ export default function AdminPage() {
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {tab === 'stores' && (
+          <div className="card divide-y-2 divide-ink/10">
+            {stores.data?.items.map((s) => (
+              <div key={s.id} className="flex flex-wrap items-center gap-3 p-3">
+                <div className="min-w-0 flex-1">
+                  <Link href={`/stores/${s.slug}`} className="font-bold hover:underline">
+                    {s.name}
+                  </Link>
+                  {s.verified && <span className="badge ml-2 bg-lale-500 text-white">✓ {tt('stores.verified')}</span>}
+                  {!s.active && <span className="badge ml-2 bg-cream text-ink-mute">{t('inactive')}</span>}
+                  <div className="text-xs text-ink-mute">
+                    /stores/{s.slug} · {tt(`cities.${s.city}`)} · {t('storeOwner')}: {s.owner.name} ({s.owner.email}) · {formatDate(s.createdAt)}
+                  </div>
+                </div>
+                <button className={clsx('btn btn-sm', s.verified ? 'btn-outline' : 'btn-blue')} onClick={() => call(() => api(`/admin/stores/${s.id}`, { method: 'POST', body: { verified: !s.verified } }), () => stores.mutate())}>
+                  {s.verified ? t('unverify') : t('verify')}
+                </button>
+                <button className={clsx('btn btn-sm', s.active ? 'btn-primary' : 'btn-teal')} onClick={() => call(() => api(`/admin/stores/${s.id}`, { method: 'POST', body: { active: !s.active } }), () => stores.mutate())}>
+                  {s.active ? t('deactivate') : t('activate')}
+                </button>
+              </div>
+            ))}
+            {stores.data?.items.length === 0 && <p className="p-6 text-center text-ink-mute">{tt('stores.empty')}</p>}
           </div>
         )}
 

@@ -18,15 +18,15 @@ const statusStyle: Record<OfferStatus, string> = {
   PENDING: 'bg-zefran-100 text-zefran-800',
   ACCEPTED: 'bg-xezer-100 text-xezer-800',
   COMPLETED: 'bg-xezer-500 text-white',
-  REJECTED: 'bg-nar-50 text-nar-700',
+  REJECTED: 'bg-nar-100 text-nar-700',
   CANCELLED: 'bg-ink/5 text-ink-mute',
-  COUNTERED: 'bg-lale-50 text-lale-700',
+  COUNTERED: 'bg-lale-100 text-lale-700',
 };
 
 function Thumb({ l, size = 64 }: { l: ListingCard; size?: number }) {
   return (
     <Link href={`/listings/${l.id}`} className="group block shrink-0" title={l.title}>
-      <div className="overflow-hidden rounded-2xl border border-line bg-cream" style={{ width: size, height: size }}>
+      <div className="overflow-hidden rounded-2xl border-[2.5px] border-ink bg-cream" style={{ width: size, height: size }}>
         {l.image ? <img src={l.image.thumbUrl} alt="" className="h-full w-full object-cover transition group-hover:scale-105" /> : <Emoji name={l.category.icon} size={size} />}
       </div>
     </Link>
@@ -97,8 +97,8 @@ export function OfferCard({ offer, onChange }: { offer: Offer; onChange: () => v
   const both = offer.fromConfirmed && offer.toConfirmed;
 
   return (
-    <motion.div layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={clsx('card overflow-hidden', offer.myTurn && 'ring-2 ring-zefran-300')}>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-3">
+    <motion.div layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card overflow-hidden">
+      <div className={clsx('flex flex-wrap items-center justify-between gap-2 border-b-[2.5px] border-ink px-5 py-3', offer.myTurn ? 'bg-zefran-300' : 'bg-cream')}>
         <Link href={`/users/${other.id}`} className="flex min-w-0 items-center gap-2.5">
           <Avatar name={other.name} url={other.avatarUrl} size={32} />
           <div className="min-w-0">
@@ -121,7 +121,7 @@ export function OfferCard({ offer, onChange }: { offer: Offer; onChange: () => v
               <Thumb key={it.id} l={it} />
             ))}
             {cash !== 0 && (
-              <span className={clsx('flex h-16 items-center gap-1 rounded-2xl px-3 text-sm font-bold', cash > 0 ? 'bg-xezer-50 text-xezer-700' : 'bg-nar-50 text-nar-700')}>
+              <span className={clsx('flex h-16 items-center gap-1 rounded-2xl px-3 text-sm font-bold', cash > 0 ? 'bg-xezer-100 text-xezer-700' : 'bg-nar-100 text-nar-700')}>
                 <Banknote className="h-4 w-4" />
                 {cash > 0 ? t('plusCash', { amount: formatAzn(cash, locale) }) : t('minusCash', { amount: formatAzn(-cash, locale) })}
               </span>
@@ -156,7 +156,7 @@ export function OfferCard({ offer, onChange }: { offer: Offer; onChange: () => v
         </div>
       )}
 
-      {offer.status === 'ACCEPTED' && <p className="mx-5 mb-4 rounded-2xl bg-xezer-50 px-4 py-3 text-sm text-xezer-800">{t('nextSteps')}</p>}
+      {offer.status === 'ACCEPTED' && <p className="mx-5 mb-4 rounded-2xl bg-xezer-100 px-4 py-3 text-sm text-xezer-800">{t('nextSteps')}</p>}
 
       <div className="flex flex-wrap gap-2 border-t border-line bg-cream/40 px-5 py-3">
         {offer.status === 'PENDING' && offer.myTurn && (
@@ -240,6 +240,8 @@ export function OfferCard({ offer, onChange }: { offer: Offer; onChange: () => v
             title: offer.listing.title,
             estimatedValue: offer.listing.estimatedValue,
             acceptsCash: offer.listing.acceptsCash,
+            swapType: offer.listing.swapType,
+            extraCash: offer.listing.extraCash,
             image: offer.listing.image,
             icon: offer.listing.category.icon,
           }}

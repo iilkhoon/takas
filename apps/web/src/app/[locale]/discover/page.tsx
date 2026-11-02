@@ -83,7 +83,7 @@ function SwipeCard({ card, onSwipe, active }: { card: Card; onSwipe: (liked: boo
             <h2 className="line-clamp-2 font-display text-lg font-bold leading-tight">{card.title}</h2>
             <span className="shrink-0 font-display text-lg font-black text-nar-500">{formatAzn(card.estimatedValue, locale)}</span>
           </div>
-          <div className="mt-2 flex items-center gap-2 rounded-2xl bg-xezer-50 px-3 py-2 text-sm text-xezer-800">
+          <div className="mt-2 flex items-center gap-2 rounded-2xl bg-xezer-100 px-3 py-2 text-sm text-xezer-800">
             <Repeat2 className="h-4 w-4 shrink-0" />
             <span className="line-clamp-1 font-semibold">{card.wantedText || t('listing.openToAnything')}</span>
           </div>

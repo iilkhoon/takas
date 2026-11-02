@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Calendar, MapPin, Repeat2, Star, Package } from 'lucide-react';
+import { ArrowRight, Calendar, MapPin, Repeat2, Star, Package } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import { serverApi } from '@/lib/server-api';
 import { formatDate, timeAgo } from '@/lib/format';
 import type { ListingCard, PublicUser } from '@/lib/types';
@@ -33,12 +34,12 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="container py-6 md:py-10">
-      <div className="relative overflow-hidden rounded-4xl bg-white ring-1 ring-line">
-        <div className="h-28 bg-gradient-to-r from-nar-400 via-lale-400 to-xezer-400 sm:h-36" />
+      <div className="relative overflow-hidden rounded-4xl bg-white border-[2.5px] border-ink">
+        <div className="h-28 border-b-[2.5px] border-ink bg-zefran-400 bg-dots sm:h-36" />
         <div className="px-6 pb-6">
-          <div className="-mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
+          <div className="relative z-10 -mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <Avatar name={u.name} url={u.avatarUrl} size={104} className="ring-4 ring-white" />
+              <Avatar name={u.name} url={u.avatarUrl} size={104} className="border-[3px] shadow-card" />
               <div className="pb-1">
                 <h1 className="flex items-center gap-2 font-display text-2xl font-black">
                   {u.name}
@@ -53,18 +54,31 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
             </div>
             <ProfileActions userId={u.id} />
           </div>
+          {u.store && (
+            <Link
+              href={`/stores/${u.store.slug}`}
+              className="mt-5 flex items-center gap-3 rounded-2xl border-[2.5px] border-ink bg-lale-500 p-3 pr-4 text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-card sm:inline-flex"
+            >
+              <Avatar name={u.store.name} url={u.store.logoUrl} size={40} square />
+              <span className="min-w-0 flex-1">
+                <span className="block font-mono text-[10.5px] font-bold uppercase tracking-wider text-white/80">{t('stores.tag')}</span>
+                <span className="block truncate font-display font-extrabold">{u.store.name}</span>
+              </span>
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          )}
           {u.bio && <p className="mt-5 max-w-2xl text-ink-soft">{u.bio}</p>}
           <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { icon: Repeat2, v: u.completedTrades, l: t('profile.trades'), c: 'text-xezer-600 bg-xezer-50' },
-              { icon: Star, v: u.rating ?? '—', l: `${t('profile.rating')} (${u.ratingCount})`, c: 'text-zefran-700 bg-zefran-50' },
-              { icon: Package, v: d.listings.length, l: t('profile.listings'), c: 'text-nar-600 bg-nar-50' },
-              { icon: Repeat2, v: u.tradedItems ?? 0, l: t('profile.traded'), c: 'text-lale-600 bg-lale-50' },
+              { icon: Repeat2, v: u.completedTrades, l: t('profile.trades'), c: 'bg-xezer-400 text-ink' },
+              { icon: Star, v: u.rating ?? '—', l: `${t('profile.rating')} (${u.ratingCount})`, c: 'bg-zefran-400 text-ink' },
+              { icon: Package, v: d.listings.length, l: t('profile.listings'), c: 'bg-nar-500 text-white' },
+              { icon: Repeat2, v: u.tradedItems ?? 0, l: t('profile.traded'), c: 'bg-lale-500 text-white' },
             ].map((s, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-3xl bg-cream p-4">
-                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${s.c}`}><s.icon className="h-5 w-5" /></span>
+              <div key={i} className="flex items-center gap-3 rounded-2xl border-[2.5px] border-ink bg-white p-4">
+                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-ink ${s.c}`}><s.icon className="h-5 w-5" /></span>
                 <div className="min-w-0">
-                  <dd className="font-display text-xl font-black">{s.v}</dd>
+                  <dd className="font-mono text-xl font-extrabold">{s.v}</dd>
                   <dt className="truncate text-xs font-semibold text-ink-mute">{s.l}</dt>
                 </div>
               </div>
@@ -81,7 +95,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         <section>
           <h2 className="section-title mb-5">{t('profile.reviews')}</h2>
           {d.reviews.length === 0 ? (
-            <p className="rounded-3xl bg-white p-6 text-center text-ink-mute ring-1 ring-line">{t('profile.noReviews')}</p>
+            <p className="rounded-3xl bg-white p-6 text-center text-ink-mute border-[2.5px] border-ink">{t('profile.noReviews')}</p>
           ) : (
             <ul className="space-y-3">
               {d.reviews.map((r) => (

@@ -36,6 +36,18 @@ enum ListingStatus {
   REJECTED
 }
 
+/// Takas növü (elan sahibinin baxımından)
+enum SwapType {
+  /// Pul fərqi ilə də, onsuz da olar
+  ANY
+  /// Başa baş — yalnız əşya-əşya, pulsuz
+  EVEN
+  /// Elan sahibi üstünə pul verir
+  PAY_EXTRA
+  /// Elan sahibi üstünə pul istəyir
+  WANT_EXTRA
+}
+
 enum OfferStatus {
   PENDING
   ACCEPTED
@@ -118,6 +130,33 @@ model User {
   reports         Report[]       @relation("ReportAuthor")
   reportsAgainst  Report[]       @relation("ReportTarget")
   swipes          Swipe[]
+  store           Store?
+}
+
+/// Mağaza (biznes) profili — istifadəçiyə bağlıdır, elanlarında "MAĞAZA" teqi görünür
+model Store {
+  id          String   @id @default(cuid())
+  ownerId     String   @unique
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  slug        String   @unique
+  name        String
+  tagline     String   @default("")
+  description String   @default("")
+  logoUrl     String?
+  coverColor  String   @default("#FFDB1F")
+  city        String   @default("baku")
+  address     String   @default("")
+  phone       String   @default("")
+  instagram   String   @default("")
+  website     String   @default("")
+  hours       String   @default("")
+  categories  String[] @default([])
+  verified    Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([city])
 }
 
 model Session {
@@ -164,6 +203,9 @@ model Listing {
   /// İstənilən kateqoriyaların slug-ları
   wantedCategories String[]      @default([])
   acceptsCash      Boolean       @default(true)
+  swapType         SwapType      @default(ANY)
+  /// PAY_EXTRA / WANT_EXTRA üçün təxmini məbləğ (AZN), 0 = razılaşma ilə
+  extraCash        Int           @default(0)
   openToAnything   Boolean       @default(false)
   canShip          Boolean       @default(false)
   status           ListingStatus @default(ACTIVE)
@@ -185,6 +227,7 @@ model Listing {
   @@index([categoryId, status])
   @@index([ownerId])
   @@index([city])
+  @@index([swapType])
 }
 
 model ListingImage {

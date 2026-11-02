@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BadgeCheck, Gem, Star, X } from 'lucide-react';
 import clsx from 'clsx';
@@ -10,11 +11,11 @@ import type { Level } from '@/lib/types';
 
 const avatarColors = ['bg-nar-100 text-nar-700', 'bg-xezer-100 text-xezer-700', 'bg-zefran-100 text-zefran-800', 'bg-lale-100 text-lale-700'];
 
-export function Avatar({ name, url, size = 40, className }: { name: string; url?: string | null; size?: number; className?: string }) {
+export function Avatar({ name, url, size = 40, className, square }: { name: string; url?: string | null; size?: number; className?: string; square?: boolean }) {
   const color = avatarColors[(name.charCodeAt(0) + name.length) % avatarColors.length];
   return (
     <span
-      className={clsx('inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-display font-bold', !url && color, className)}
+      className={clsx('inline-flex shrink-0 items-center justify-center overflow-hidden border-2 border-ink bg-white font-display font-black', square ? 'rounded-xl' : 'rounded-full', !url && color, className)}
       style={{ width: size, height: size, fontSize: size * 0.36 }}
     >
       {url ? <img src={url} alt={name} className="h-full w-full object-cover" /> : initials(name)}
@@ -50,13 +51,16 @@ export function Modal({
       document.body.style.overflow = prev;
     };
   }, [open, onClose]);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal>
           <motion.div
-            className="absolute inset-0 bg-ink/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -68,13 +72,13 @@ export function Modal({
             exit={{ opacity: 0, y: 40, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}
             className={clsx(
-              'relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-4xl bg-white shadow-lift sm:rounded-4xl',
+              'relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-4xl border-[2.5px] border-ink bg-white shadow-lift sm:rounded-4xl',
               size === 'sm' && 'sm:max-w-md',
               size === 'md' && 'sm:max-w-xl',
               size === 'lg' && 'sm:max-w-3xl',
             )}
           >
-            <div className="flex items-center justify-between gap-4 border-b border-line px-6 py-4">
+            <div className="flex items-center justify-between gap-4 border-b-[2.5px] border-ink bg-zefran-300 px-6 py-4">
               <h2 className="font-display text-lg font-bold">{title}</h2>
               <button onClick={onClose} className="btn-icon -mr-2" aria-label="close">
                 <X className="h-5 w-5" />
@@ -84,13 +88,14 @@ export function Modal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
 
 export function EmptyState({ emoji = 'package', title, sub, action }: { emoji?: string; title: string; sub?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-4xl border-2 border-dashed border-line bg-white/60 px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center rounded-4xl border-[2.5px] border-dashed border-ink bg-white px-6 py-14 text-center">
       <motion.div initial={{ scale: 0.6, rotate: -10, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 16 }}>
         <Emoji name={emoji} size={88} className="animate-float" />
       </motion.div>
@@ -112,16 +117,16 @@ export function Stars({ value, size = 14, className }: { value: number; size?: n
 }
 
 const levelStyle: Record<Level, string> = {
-  newbie: 'bg-ink/5 text-ink-soft',
-  starter: 'bg-xezer-50 text-xezer-700',
-  trader: 'bg-lale-50 text-lale-700',
-  master: 'bg-zefran-100 text-zefran-800',
-  legend: 'bg-gradient-to-r from-nar-500 to-lale-500 text-white',
+  newbie: 'bg-white text-ink',
+  starter: 'bg-xezer-200 text-ink',
+  trader: 'bg-lale-100 text-ink',
+  master: 'bg-zefran-400 text-ink',
+  legend: 'bg-nar-500 text-white',
 };
 
 export function LevelBadge({ level, className }: { level: Level; className?: string }) {
   const t = useTranslations('level');
-  return <span className={clsx('badge normal-case tracking-normal', levelStyle[level], className)}>{t(level)}</span>;
+  return <span className={clsx('badge', levelStyle[level], className)}>{t(level)}</span>;
 }
 
 export function TrustBadges({ verified, plus, size = 16 }: { verified?: boolean; plus?: boolean; size?: number }) {
@@ -148,7 +153,7 @@ export function Spinner({ className }: { className?: string }) {
 
 export function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: ReactNode; hint?: ReactNode }) {
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border-2 border-line bg-white px-4 py-3 transition hover:border-ink/15">
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border-[2.5px] border-ink bg-white px-4 py-3 transition hover:shadow-sm">
       <span>
         <span className="block text-sm font-bold">{label}</span>
         {hint && <span className="mt-0.5 block text-xs text-ink-mute">{hint}</span>}
@@ -158,12 +163,12 @@ export function Toggle({ checked, onChange, label, hint }: { checked: boolean; o
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={clsx('relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition-colors', checked ? 'bg-xezer-500' : 'bg-ink/15')}
+        className={clsx('relative h-7 w-12 shrink-0 rounded-full border-2 border-ink transition-colors', checked ? 'bg-xezer-400' : 'bg-white')}
       >
         <motion.span
           layout
           transition={{ type: 'spring', stiffness: 600, damping: 32 }}
-          className={clsx('absolute top-1 h-5 w-5 rounded-full bg-white shadow', checked ? 'right-1' : 'left-1')}
+          className={clsx('absolute top-[3px] h-[18px] w-[18px] rounded-full border-2 border-ink bg-white', checked ? 'right-[3px]' : 'left-[3px]')}
         />
       </button>
     </label>

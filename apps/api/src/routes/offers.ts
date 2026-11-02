@@ -68,6 +68,19 @@ const createSchema = z.object({
   message: z.string().trim().max(1000).default(''),
 });
 
+/**
+ * Pul fərqinin elanın takas növünə uyğunluğunu yoxlayır.
+ * cashAmount > 0: təklif edən üstünə pul verir; < 0: təklif edən pul istəyir.
+ */
+function checkCash(listing: { swapType: string; acceptsCash: boolean }, cash: number) {
+  if (cash === 0) return;
+  if (!listing.acceptsCash || listing.swapType === 'EVEN') throw badRequest('even_swap_only');
+  // Elan sahibi pul istəyir → təklif edən pul istəyə bilməz
+  if (listing.swapType === 'WANT_EXTRA' && cash < 0) throw badRequest('cash_direction_mismatch');
+  // Elan sahibi pul verir → təklif edən pul verməməlidir
+  if (listing.swapType === 'PAY_EXTRA' && cash > 0) throw badRequest('cash_direction_mismatch');
+}
+
 async function validateItems(ids: string[], ownerId: string) {
   if (!ids.length) return [];
   const items = await prisma.listing.findMany({ where: { id: { in: ids }, ownerId, status: 'ACTIVE' } });
@@ -82,7 +95,7 @@ router.post('/', async (req, res) => {
   if (!target || target.status !== 'ACTIVE') throw badRequest('listing_unavailable');
   if (target.ownerId === me) throw badRequest('own_listing');
   if (!body.offeredListingIds.length && body.cashAmount <= 0) throw badRequest('empty_offer');
-  if (body.cashAmount !== 0 && !target.acceptsCash) throw badRequest('cash_not_accepted');
+  checkCash(target, body.cashAmount);
   await validateItems(body.offeredListingIds, me);
 
   const dup = await prisma.offer.findFirst({
@@ -201,7 +214,7 @@ router.post('/:id/counter', async (req, res) => {
   if (o.proposerId === me) throw forbidden('not_your_turn');
   const body = parse(counterSchema, req.body);
   if (!body.offeredListingIds.length && body.cashAmount <= 0) throw badRequest('empty_offer');
-  if (body.cashAmount !== 0 && !o.listing.acceptsCash) throw badRequest('cash_not_accepted');
+  checkCash(o.listing, body.cashAmount);
   await validateItems(body.offeredListingIds, o.fromUserId);
 
   const created = await prisma.$transaction(async (tx) => {

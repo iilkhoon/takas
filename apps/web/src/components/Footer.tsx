@@ -34,6 +34,7 @@ export function Footer() {
       links: [
         { href: '/listings', label: t('nav.explore') },
         { href: '/discover', label: t('nav.discover') },
+        { href: '/stores', label: t('nav.stores') },
         { href: '/matches', label: t('nav.matches') },
         { href: '/listings/new', label: t('nav.post') },
       ],
@@ -44,6 +45,7 @@ export function Footer() {
         { href: '/about', label: t('footer.about') },
         { href: '/pricing', label: t('footer.pricing') },
         { href: '/advertise', label: t('footer.advertise') },
+        { href: '/store', label: t('nav.openStore') },
       ],
     },
     {
@@ -56,9 +58,7 @@ export function Footer() {
     },
   ];
   return (
-    <footer className="relative mt-20 overflow-hidden bg-ink pb-24 pt-16 text-white/80 md:pb-10">
-      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-nar-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-10 h-72 w-72 rounded-full bg-xezer-500/15 blur-3xl" />
+    <footer className="relative mt-20 overflow-hidden border-t-[2.5px] border-ink bg-ink pb-24 pt-16 text-white/80 md:pb-10">
       <div className="container relative">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>

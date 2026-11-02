@@ -32,7 +32,7 @@ export function Gallery({ images, title, badges }: { images: Image[]; title: str
   if (!n) return null;
   return (
     <div>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-4xl border border-line bg-cream-deep">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-4xl border-[2.5px] border-ink bg-cream-deep shadow-card">
         <AnimatePresence initial={false} custom={dir}>
           <motion.img
             key={images[i].url}
@@ -54,15 +54,15 @@ export function Gallery({ images, title, badges }: { images: Image[]; title: str
           />
         </AnimatePresence>
         <div className="absolute left-4 top-4 flex gap-1.5">{badges}</div>
-        <button onClick={() => setZoom(true)} className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-card backdrop-blur transition hover:scale-110" aria-label="zoom">
+        <button onClick={() => setZoom(true)} className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border-[2.5px] border-ink bg-white shadow-sm transition hover:scale-110" aria-label="zoom">
           <Expand className="h-[18px] w-[18px]" />
         </button>
         {n > 1 && (
           <>
-            <button onClick={() => go(-1)} className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-card transition hover:scale-110" aria-label="prev">
+            <button onClick={() => go(-1)} className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border-[2.5px] border-ink bg-white shadow-sm transition hover:scale-110" aria-label="prev">
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <button onClick={() => go(1)} className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-card transition hover:scale-110" aria-label="next">
+            <button onClick={() => go(1)} className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border-[2.5px] border-ink bg-white shadow-sm transition hover:scale-110" aria-label="next">
               <ChevronRight className="h-5 w-5" />
             </button>
             <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full bg-ink/40 px-2 py-1.5 backdrop-blur">
@@ -82,7 +82,7 @@ export function Gallery({ images, title, badges }: { images: Image[]; title: str
                 setDir(k > i ? 1 : -1);
                 setI(k);
               }}
-              className={clsx('h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 transition', k === i ? 'border-nar-500' : 'border-transparent opacity-70 hover:opacity-100')}
+              className={clsx('h-20 w-20 shrink-0 overflow-hidden rounded-xl border-[2.5px] transition', k === i ? 'border-ink shadow-sm' : 'border-ink/30 opacity-70 hover:opacity-100')}
             >
               <img src={im.thumbUrl} alt="" className="h-full w-full object-cover" />
             </button>

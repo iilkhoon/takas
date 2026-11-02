@@ -28,6 +28,7 @@ router.get('/meta', async (_req, res) => {
       vipDays: pricing.vipDays,
       plusMonthly: pricing.plusMonthly,
       plusMonthlyBoosts: pricing.plusMonthlyBoosts,
+      storeActiveListings: pricing.storeActiveListings,
       loyaltyEvery: pricing.loyaltyEvery,
       referralBoosts: pricing.referralBoosts,
       welcomeBoosts: pricing.welcomeBoosts,

@@ -2,7 +2,9 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ArrowRight, Plus, ShieldCheck, Scale, Sparkles, Gift, Leaf, Smartphone, Gem, Check } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { serverApi } from '@/lib/server-api';
-import type { ListingCard as TCard, Meta } from '@/lib/types';
+import type { ListingCard as TCard, Meta, Paged, SwapType } from '@/lib/types';
+import { StoreCard, type StoreListItem } from '@/components/StoreCard';
+import { SWAP_STYLE } from '@/lib/swap';
 import { HeroSwap } from '@/components/home/HeroSwap';
 import { Reveal, CountUp } from '@/components/home/Reveal';
 import { CategoryGrid } from '@/components/CategoryStrip';
@@ -40,20 +42,29 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations();
-  const [home, meta] = await Promise.all([serverApi<HomeData>('/listings/home'), serverApi<Meta>('/meta', { revalidate: 60 })]);
+  const [home, meta, stores] = await Promise.all([
+    serverApi<HomeData>('/listings/home'),
+    serverApi<Meta>('/meta', { revalidate: 60 }),
+    serverApi<Paged<StoreListItem>>('/stores?limit=4'),
+  ]);
+  const swapCards: { k: SwapType; a: string; b: string; cash: string; side: 'a' | 'b' | null }[] = [
+    { k: 'EVEN', a: 'mobile_phone', b: 'video_game', cash: '= 0 ₼', side: null },
+    { k: 'WANT_EXTRA', a: 'laptop', b: 'camera', cash: '+100 ₼', side: 'b' },
+    { k: 'PAY_EXTRA', a: 'bicycle', b: 'kick_scooter', cash: '+50 ₼', side: 'a' },
+  ];
   const stats = home?.stats ?? { listings: 0, trades: 0, users: 0 };
 
   const steps = [
-    { e: 'camera_with_flash', t: t('home.how1t'), d: t('home.how1d'), c: 'bg-nar-50' },
-    { e: 'wrapped_gift', t: t('home.how2t'), d: t('home.how2d'), c: 'bg-zefran-50' },
-    { e: 'speech_balloon', t: t('home.how3t'), d: t('home.how3d'), c: 'bg-lale-50' },
-    { e: 'handshake', t: t('home.how4t'), d: t('home.how4d'), c: 'bg-xezer-50' },
+    { e: 'camera_with_flash', t: t('home.how1t'), d: t('home.how1d'), c: 'bg-nar-100' },
+    { e: 'wrapped_gift', t: t('home.how2t'), d: t('home.how2d'), c: 'bg-zefran-100' },
+    { e: 'speech_balloon', t: t('home.how3t'), d: t('home.how3d'), c: 'bg-lale-100' },
+    { e: 'handshake', t: t('home.how4t'), d: t('home.how4d'), c: 'bg-xezer-100' },
   ];
   const whys = [
-    { icon: Sparkles, t: t('home.why1t'), d: t('home.why1d'), c: 'text-nar-500 bg-nar-50' },
-    { icon: Scale, t: t('home.why2t'), d: t('home.why2d'), c: 'text-lale-500 bg-lale-50' },
-    { icon: ShieldCheck, t: t('home.why3t'), d: t('home.why3d'), c: 'text-xezer-600 bg-xezer-50' },
-    { icon: Gift, t: t('home.why4t'), d: t('home.why4d'), c: 'text-zefran-700 bg-zefran-50' },
+    { icon: Sparkles, t: t('home.why1t'), d: t('home.why1d'), c: 'text-nar-500 bg-nar-100' },
+    { icon: Scale, t: t('home.why2t'), d: t('home.why2d'), c: 'text-lale-500 bg-lale-100' },
+    { icon: ShieldCheck, t: t('home.why3t'), d: t('home.why3d'), c: 'text-xezer-600 bg-xezer-100' },
+    { icon: Gift, t: t('home.why4t'), d: t('home.why4d'), c: 'text-zefran-700 bg-zefran-100' },
   ];
 
   return (
@@ -148,7 +159,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* ---------------- VIP ---------------- */}
       {home && home.vip.length > 0 && (
         <section className="container pt-14">
-          <div className="rounded-4xl bg-gradient-to-br from-zefran-100 via-zefran-50 to-white p-4 ring-1 ring-zefran-200 sm:p-6">
+          <div className="rounded-4xl bg-zefran-300 p-4 border-[2.5px] border-ink shadow-card sm:p-6">
             <SectionHead title={`⭐ ${t('home.vipTitle')}`} sub={t('home.vipSub')} href="/pricing" cta="VIP?" />
             <ListingGrid items={home.vip.slice(0, 4)} />
           </div>
@@ -188,12 +199,52 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* ---------------- TAKAS NÖVLƏRİ ---------------- */}
+      <section className="container pt-20">
+        <Reveal>
+          <SectionHead title={t('swap.homeTitle')} sub={t('swap.homeSub')} />
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {swapCards.map((c, i) => {
+            const Icon = SWAP_STYLE[c.k].icon;
+            return (
+              <Reveal key={c.k} delay={i * 0.08}>
+                <Link
+                  href={`/listings?swapType=${c.k}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl border-[2.5px] border-ink bg-white shadow-card transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift"
+                >
+                  <div className={`relative flex items-center justify-center gap-3 border-b-[2.5px] border-ink bg-dots px-4 py-7 ${SWAP_STYLE[c.k].cls}`}>
+                    <span className="flex h-20 w-20 rotate-[-6deg] items-center justify-center rounded-2xl border-[2.5px] border-ink bg-white shadow-sm transition group-hover:rotate-0">
+                      <Emoji name={c.a} size={52} />
+                    </span>
+                    <span className="flex flex-col items-center gap-1">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border-[2.5px] border-ink bg-white text-ink">
+                        <Icon className="h-5 w-5" strokeWidth={3} />
+                      </span>
+                      <span className="rounded-md border-2 border-ink bg-white px-1.5 py-0.5 font-mono text-[11px] font-bold text-ink">{c.cash}</span>
+                    </span>
+                    <span className="flex h-20 w-20 rotate-[6deg] items-center justify-center rounded-2xl border-[2.5px] border-ink bg-white shadow-sm transition group-hover:rotate-0">
+                      <Emoji name={c.b} size={52} />
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="font-display text-xl font-extrabold">{t(`swap.type.${c.k}`)}</h3>
+                    <p className="mt-1.5 text-sm text-ink-soft">{t(`swap.desc.${c.k}`)}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-ink group-hover:underline">
+                      {t('swap.see')} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            );
+          })}
+        </div>
+      </section>
+
       {/* ---------------- KƏŞF ET PROMO ---------------- */}
       <section className="container pt-20">
         <Reveal>
-          <div className="relative overflow-hidden rounded-4xl bg-ink px-6 py-10 text-white sm:px-12 sm:py-14">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-64 w-64 rounded-full bg-nar-500/40 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-16 left-1/3 h-64 w-64 rounded-full bg-lale-500/30 blur-3xl" />
+          <div className="relative overflow-hidden rounded-4xl border-[2.5px] border-ink bg-ink px-6 py-10 text-white shadow-card sm:px-12 sm:py-14">
             <div className="relative grid items-center gap-10 md:grid-cols-2">
               <div>
                 <span className="badge bg-nar-500 text-white">🔥 New</span>
@@ -212,19 +263,41 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 ].map((c, i) => (
                   <div
                     key={c.e}
-                    className={`absolute inset-0 flex flex-col items-center justify-center rounded-4xl border-4 border-white ${c.bg} shadow-lift`}
+                    className={`absolute inset-0 flex flex-col items-center justify-center rounded-4xl border-[3px] border-white ${c.bg} shadow-[6px_6px_0_0_#FFDB1F]`}
                     style={{ transform: `translateX(${c.x}px) rotate(${c.r}deg)`, zIndex: i }}
                   >
                     <Emoji name={c.e} size={120} className={i === 2 ? 'animate-float' : ''} />
                   </div>
                 ))}
-                <span className="absolute -left-6 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-white text-2xl shadow-lift">✕</span>
-                <span className="absolute -right-6 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-nar-500 text-2xl shadow-lift">❤</span>
+                <span className="absolute -left-6 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-ink bg-white text-2xl text-ink shadow-[4px_4px_0_0_#FFDB1F]">✕</span>
+                <span className="absolute -right-6 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-ink bg-nar-500 text-2xl shadow-[4px_4px_0_0_#FFDB1F]">❤</span>
               </div>
             </div>
           </div>
         </Reveal>
       </section>
+
+      {/* ---------------- MAĞAZALAR ---------------- */}
+      {stores && stores.items.length > 0 && (
+        <section className="container pt-20">
+          <SectionHead title={t('stores.homeTitle')} sub={t('stores.homeSub')} href="/stores" cta={t('stores.allStores')} />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {stores.items.map((st, i) => (
+              <StoreCard key={st.id} s={st} index={i} />
+            ))}
+          </div>
+          <div className="mt-4 flex flex-col items-start justify-between gap-3 rounded-3xl border-[2.5px] border-dashed border-ink bg-lale-100 p-5 sm:flex-row sm:items-center">
+            <div>
+              <div className="font-display text-lg font-extrabold">{t('stores.openTitle')}</div>
+              <p className="text-sm text-ink-soft">{t('stores.b1', { count: meta?.pricing.storeActiveListings ?? 50 })} · {t('stores.b2')}</p>
+            </div>
+            <Link href="/store" className="btn btn-blue shrink-0">
+              {t('stores.openCta')}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ---------------- NİYƏ DƏYİŞ ---------------- */}
       <section className="container pt-20">
@@ -234,7 +307,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {whys.map((w, i) => (
             <Reveal key={w.t} delay={i * 0.06}>
-              <div className="h-full rounded-3xl border border-line bg-white p-6">
+              <div className="h-full rounded-3xl border-[2.5px] border-ink bg-white p-6">
                 <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${w.c}`}>
                   <w.icon className="h-6 w-6" />
                 </span>
@@ -257,7 +330,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* ---------------- PLUS + TƏHLÜKƏSİZLİK ---------------- */}
       <section className="container grid gap-4 pt-20 lg:grid-cols-2">
         <Reveal className="h-full">
-          <div className="relative h-full overflow-hidden rounded-4xl bg-gradient-to-br from-lale-500 to-lale-700 p-8 text-white">
+          <div className="relative h-full overflow-hidden rounded-4xl border-[2.5px] border-ink bg-lale-500 shadow-card p-8 text-white">
             <Emoji name="gem_stone" size={120} className="absolute -right-4 -top-4 rotate-12 opacity-90" />
             <Gem className="h-8 w-8 text-white/80" />
             <h3 className="mt-4 max-w-sm font-display text-2xl font-black leading-tight">{t('home.plusTitle')}</h3>
@@ -269,9 +342,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </Reveal>
         <Reveal delay={0.08} className="h-full">
-          <div className="h-full rounded-4xl border border-line bg-white p-8">
+          <div className="h-full rounded-4xl border-[2.5px] border-ink bg-white p-8">
             <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-xezer-50">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-xezer-100">
                 <Emoji name="shield" size={34} />
               </span>
               <h3 className="font-display text-xl font-bold">{t('home.safetyTitle')}</h3>
@@ -297,7 +370,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* ---------------- EKO + MOBİL ---------------- */}
       <section className="container grid gap-4 pt-4 md:grid-cols-2">
         <Reveal>
-          <div className="flex h-full items-center gap-5 rounded-4xl bg-xezer-50 p-6 ring-1 ring-xezer-100">
+          <div className="flex h-full items-center gap-5 rounded-4xl bg-xezer-100 p-6 border-[2.5px] border-ink">
             <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white">
               <Leaf className="h-8 w-8 text-xezer-500" />
             </span>
@@ -308,7 +381,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </Reveal>
         <Reveal delay={0.06}>
-          <div className="flex h-full items-center gap-5 rounded-4xl bg-nar-50 p-6 ring-1 ring-nar-100">
+          <div className="flex h-full items-center gap-5 rounded-4xl bg-nar-100 p-6 border-[2.5px] border-ink">
             <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white">
               <Smartphone className="h-8 w-8 text-nar-500" />
             </span>

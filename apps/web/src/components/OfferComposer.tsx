@@ -9,7 +9,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { api } from '@/lib/api';
 import { formatAzn } from '@/lib/format';
-import type { ListingCard } from '@/lib/types';
+import type { ListingCard, SwapType } from '@/lib/types';
+import { SwapBadge } from './Tags';
 import { useErrorText } from './Providers';
 import { useToast } from './Toast';
 import { Emoji, Spinner } from './ui';
@@ -19,6 +20,8 @@ export interface ComposerTarget {
   title: string;
   estimatedValue: number;
   acceptsCash: boolean;
+  swapType?: SwapType;
+  extraCash?: number;
   image: { thumbUrl: string } | null;
   icon: string;
 }
@@ -33,7 +36,7 @@ export function FairnessMeter({ target, offered, perspective = 'offerer' }: { ta
   const label =
     offered <= 0 ? t('fairEmpty') : fair ? t('fairGreat') : low === (perspective === 'offerer') ? t('fairLowYou') : t('fairHighYou');
   return (
-    <div className="rounded-3xl bg-cream p-4">
+    <div className="rounded-3xl border-[2.5px] border-ink bg-cream p-4">
       <div className="flex items-center justify-between gap-2 text-sm">
         <span className="flex items-center gap-1.5 font-bold">
           <Scale className="h-4 w-4 text-lale-500" />
@@ -41,10 +44,14 @@ export function FairnessMeter({ target, offered, perspective = 'offerer' }: { ta
         </span>
         <span className={clsx('font-bold', offered <= 0 ? 'text-ink-mute' : fair ? 'text-xezer-600' : 'text-zefran-700')}>{label}</span>
       </div>
-      <div className="relative mt-3 h-3 rounded-full bg-gradient-to-r from-nar-300 via-xezer-300 to-zefran-300">
-        <div className="absolute left-[42.5%] top-0 h-full w-[17.5%] rounded-full bg-xezer-500/40" />
+      <div className="relative mt-3 flex h-4 overflow-hidden rounded-full border-2 border-ink">
+        <div className="h-full w-[42.5%] bg-nar-300" />
+        <div className="h-full w-[17.5%] border-x-2 border-ink bg-xezer-400" />
+        <div className="h-full flex-1 bg-zefran-300" />
+      </div>
+      <div className="relative -mt-4 h-4">
         <motion.div
-          className="absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-ink shadow-lift"
+          className="absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-ink bg-white shadow-sm"
           animate={{ left: `${pos * 100}%` }}
           transition={{ type: 'spring', stiffness: 260, damping: 22 }}
         />
@@ -95,8 +102,14 @@ export function OfferComposer({
   const items = useMemo(() => (data?.items ?? []).filter((l) => l.status === 'ACTIVE' && l.id !== target.id), [data, target.id]);
 
   const [selected, setSelected] = useState<string[]>(initialItems);
-  const [cashMode, setCashMode] = useState<'none' | 'pos' | 'neg'>(initialCash > 0 ? 'pos' : initialCash < 0 ? 'neg' : 'none');
-  const [cash, setCash] = useState(Math.abs(initialCash) || 0);
+  const swapType: SwapType = target.swapType ?? (target.acceptsCash ? 'ANY' : 'EVEN');
+  // Elanın takas növünə görə icazə verilən pul istiqamətləri (müsbət = təklif edən əlavə edir)
+  const allowed: ('none' | 'pos' | 'neg')[] =
+    swapType === 'EVEN' ? ['none'] : swapType === 'WANT_EXTRA' ? ['none', 'pos'] : swapType === 'PAY_EXTRA' ? ['none', 'neg'] : ['none', 'pos', 'neg'];
+  const defaultMode: 'none' | 'pos' | 'neg' =
+    initialCash > 0 ? 'pos' : initialCash < 0 ? 'neg' : mode === 'new' && swapType === 'WANT_EXTRA' && target.extraCash ? 'pos' : mode === 'new' && swapType === 'PAY_EXTRA' && target.extraCash ? 'neg' : 'none';
+  const [cashMode, setCashMode] = useState<'none' | 'pos' | 'neg'>(allowed.includes(defaultMode) ? defaultMode : 'none');
+  const [cash, setCash] = useState(Math.abs(initialCash) || (mode === 'new' && defaultMode !== 'none' ? target.extraCash ?? 0 : 0));
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -130,7 +143,7 @@ export function OfferComposer({
   return (
     <div className="space-y-5">
       {/* Hədəf */}
-      <div className="flex items-center gap-3 rounded-3xl border border-line p-3">
+      <div className="flex items-center gap-3 rounded-3xl border-[2.5px] border-ink p-3">
         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-cream">
           {target.image ? <img src={target.image.thumbUrl} alt="" className="h-full w-full object-cover" /> : <Emoji name={target.icon} size={64} />}
         </div>
@@ -154,7 +167,7 @@ export function OfferComposer({
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-line p-4 text-center text-sm text-ink-soft">
+          <div className="rounded-2xl border-[2.5px] border-dashed border-ink p-4 text-center text-sm text-ink-soft">
             {t('noItems')}
             {mode === 'new' && (
               <div className="mt-3">
@@ -175,7 +188,7 @@ export function OfferComposer({
                   onClick={() => toggle(it.id)}
                   className={clsx(
                     'group relative overflow-hidden rounded-2xl border-2 text-left transition',
-                    on ? 'border-nar-500 ring-4 ring-nar-100' : 'border-line hover:border-ink/20',
+                    on ? 'border-ink bg-zefran-300 shadow-sm -translate-y-0.5' : 'border-ink/25 hover:border-ink',
                   )}
                 >
                   <div className="aspect-square bg-cream">
@@ -188,7 +201,7 @@ export function OfferComposer({
                   <span
                     className={clsx(
                       'absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 transition',
-                      on ? 'border-nar-500 bg-nar-500 text-white' : 'border-white bg-white/80 text-transparent',
+                      on ? 'border-ink bg-nar-500 text-white' : 'border-ink bg-white/80 text-transparent',
                     )}
                   >
                     <Check className="h-3.5 w-3.5" strokeWidth={3.5} />
@@ -202,19 +215,25 @@ export function OfferComposer({
 
       {/* Pul fərqi */}
       <div>
-        <span className="label">{t('addCash')}</span>
-        {!target.acceptsCash ? (
-          <p className="rounded-2xl bg-cream px-4 py-3 text-sm text-ink-soft">{t('cashNotAccepted')}</p>
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <span className="label mb-0">{t('addCash')}</span>
+          <SwapBadge type={swapType} amount={target.extraCash ?? 0} />
+        </div>
+        {swapType === 'EVEN' ? (
+          <p className="rounded-2xl border-[2.5px] border-ink bg-lale-100 px-4 py-3 text-sm font-semibold text-ink">{t('evenOnly')}</p>
         ) : (
           <>
-            <div className="grid grid-cols-3 gap-1 rounded-2xl bg-cream p-1">
+            {swapType !== 'ANY' && (
+              <p className="mb-2 text-xs font-semibold text-ink-mute">{t(swapType === 'WANT_EXTRA' ? (isOfferer ? 'hintWantExtra' : 'hintWantExtraOwner') : isOfferer ? 'hintPayExtra' : 'hintPayExtraOwner')}</p>
+            )}
+            <div className={clsx('grid gap-1 rounded-2xl border-[2.5px] border-ink bg-cream p-1', allowed.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
               {(
                 [
                   ['none', t('noCash')],
                   ['pos', posLabel],
                   ['neg', negLabel],
                 ] as const
-              ).map(([k, label]) => (
+              ).filter(([k]) => allowed.includes(k)).map(([k, label]) => (
                 <button
                   key={k}
                   type="button"

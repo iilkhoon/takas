@@ -27,7 +27,7 @@ export default function MyListingsPage() {
   const { data, mutate } = useSWR<{ items: ListingCard[] }>(ready ? `/listings/mine?status=${tab}` : null);
   const { data: all } = useSWR<{ items: ListingCard[] }>(ready ? '/listings/mine?status=active' : null);
 
-  const limit = me?.plan === 'PLUS' ? meta?.pricing.plusActiveListings : meta?.pricing.freeActiveListings;
+  const limit = me?.plan === 'PLUS' ? meta?.pricing.plusActiveListings : me?.store ? meta?.pricing.storeActiveListings : meta?.pricing.freeActiveListings;
   const action = async (id: string, kind: 'bump' | 'vip') => {
     setBusy(id + kind);
     try {
@@ -49,10 +49,10 @@ export default function MyListingsPage() {
           <h1 className="font-display text-3xl font-black">{t('myListings.title')}</h1>
           {me && (
             <div className="mt-2 flex flex-wrap gap-2 text-sm">
-              <span className="badge bg-white normal-case tracking-normal text-ink-soft ring-1 ring-line">
+              <span className="badge bg-white text-ink">
                 {t('myListings.limit', { count: all?.items.length ?? 0, limit: limit ?? '…' })}
               </span>
-              <span className="badge bg-zefran-100 normal-case tracking-normal text-zefran-800">
+              <span className="badge bg-zefran-300 text-ink">
                 <Sparkles className="h-3 w-3" />
                 {t('myListings.credits', { count: me.boostCredits })}
               </span>
@@ -86,7 +86,7 @@ export default function MyListingsPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
                     {l.isVip && <span className="badge bg-zefran-400 text-ink">VIP</span>}
-                    <span className={clsx('badge', l.status === 'ACTIVE' ? 'bg-xezer-50 text-xezer-700' : 'bg-ink/5 text-ink-mute')}>{t(`lstatus.${l.status}`)}</span>
+                    <span className={clsx('badge', l.status === 'ACTIVE' ? 'bg-xezer-100 text-xezer-700' : 'bg-ink/5 text-ink-mute')}>{t(`lstatus.${l.status}`)}</span>
                   </div>
                   <div className="mt-1 truncate font-bold">{l.title}</div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-3 text-xs text-ink-mute">

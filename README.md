@@ -16,7 +16,9 @@ Sayt 4 dildədir: 🇦🇿 Azərbaycan (əsas), 🇬🇧 İngilis, 🇹🇷 Tür
 | **Qeydiyyat / giriş** | E-poçt və ya telefonla. Təhlükəsiz JWT + httpOnly cookie, sessiya rotasiyası |
 | **Elan yerləşdirmə** | 10 şəkilə qədər (sürüşdürüb sıralamaq), kateqoriya, vəziyyət, təxmini dəyər, şəhər |
 | **"Nə istəyirəm?"** | Hər elanda əvəzində istənilən kateqoriyalar + sərbəst mətn, "hər təklifə açığam", "pul fərqi olar", "çatdırılma mümkündür" |
-| **Takas təklifi** | 1–5 əşya + pul fərqi (üstünə vermək və ya istəmək), mesajla |
+| **Takas növləri** | Hər elanda takas növü göstərilir: **Başa baş** (pulsuz, yalnız əşya), **Üstünə pul istəyirəm** (məbləğlə), **Üstünə pul verirəm** (məbləğlə), **Pul fərqi olar**. Server təklifləri bu qaydaya görə yoxlayır |
+| **Takas təklifi** | 1–5 əşya + pul fərqi (üstünə vermək və ya istəmək), mesajla. Pul seçimləri elanın takas növünə uyğun məhdudlaşır |
+| **Mağazalar** | Biznes hesabı `/store` səhifəsindən mağaza açır: loqo, rəng, ünvan, iş saatları, Instagram, sayt. 50 aktiv elan limiti var. Bütün elanlarında **"MAĞAZA"** teqi görünür. Öz səhifəsi `/stores/<ad>` ünvanındadır, kataloqu `/stores`. Admin "təsdiqlənmiş" nişanı verir |
 | **Ədalət göstəricisi** | Təklif zamanı dəyərlərin balansını canlı göstərir |
 | **Əks-təklif** | Qarşı tərəf fərqli əşya və ya məbləğ təklif edə bilər, növbə sistemi ilə |
 | **İki tərəfli təsdiq** | Takas yalnız hər iki tərəf "Takas baş tutdu" basanda tamamlanır |
@@ -37,7 +39,7 @@ Sayt 4 dildədir: 🇦🇿 Azərbaycan (əsas), 🇬🇧 İngilis, 🇹🇷 Tür
 | **Reklam bannerləri**: admin paneldən idarə olunur, göstərilmə və klik sayılır | birbaşa satış |
 | **Google AdSense**: avtomatik, `ADSENSE_CLIENT` təyin edəndə | — |
 
-**Pulsuz planda** 5 aktiv elan limiti var. Bu, Plus-a keçməyə stimul verir.
+**Pulsuz planda** 5 aktiv elan limiti var, **mağazalarda** 50. Bu, Plus-a keçməyə stimul verir.
 
 **Sadiqlik ("6-cı pulsuz")**: hər 5 uğurlu takasdan sonra 1 pulsuz irəli çəkmə verilir.
 **Dəvət proqramı**: dostun sənin kodunla gəlib ilk elanını yerləşdirəndə hər ikiniz 2 pulsuz irəli çəkmə alırsınız.
@@ -46,7 +48,7 @@ Sayt 4 dildədir: 🇦🇿 Azərbaycan (əsas), 🇬🇧 İngilis, 🇹🇷 Tür
 Bütün qiymətlər və limitlər bir yerdə saxlanılır: `apps/api/src/lib/config.ts` → `pricing`.
 
 ### 🛡 Admin panel (`/admin`)
-Statistika (istifadəçilər, elanlar, takaslar, gəlir), şikayətlərə baxış, elanları bloklamaq, istifadəçiləri bloklamaq və bonus vermək, reklam bannerlərini idarə etmək.
+Statistika (istifadəçilər, elanlar, takaslar, mağazalar, gəlir), şikayətlərə baxış, mağazaları təsdiqləmək və ya deaktiv etmək, elanları bloklamaq, istifadəçiləri bloklamaq və bonus vermək, reklam bannerlərini idarə etmək.
 
 ---
 
@@ -74,7 +76,7 @@ takas/
 |---|---|---|
 | POST | `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/logout` | Hesab |
 | GET | `/auth/me` | Mən + sayğaclar |
-| GET | `/listings?q=&category=&city=&condition=&minValue=&maxValue=&wants=&sort=` | Axtarış |
+| GET | `/listings?q=&category=&city=&condition=&minValue=&maxValue=&wants=&swapType=&seller=store\|person&store=&sort=` | Axtarış |
 | GET | `/listings/home`, `/listings/:id`, `/listings/mine`, `/listings/matches`, `/listings/discover` | |
 | POST/PUT/DELETE | `/listings`, `/listings/:id` | Elan CRUD |
 | POST | `/listings/:id/bump`, `/listings/:id/vip`, `/listings/:id/favorite`, `/listings/:id/swipe` | |
@@ -82,6 +84,8 @@ takas/
 | GET/POST | `/offers`, `/offers/:id/{accept,reject,counter,cancel,complete,review}` | Takas axını |
 | GET/POST | `/conversations`, `/conversations/:id`, `/conversations/:id/messages` | Çat |
 | GET/POST | `/wallet`, `/wallet/topup`, `/wallet/plus`, `/wallet/callback/:provider` | Ödəniş |
+| GET | `/stores?q=&city=&category=`, `/stores/:slug` | Mağaza kataloqu və səhifəsi |
+| GET/POST/PATCH/DELETE | `/stores/me/current`, `/stores`, `/stores/me`, `/stores/me/logo` | Öz mağazanı idarə et |
 | GET | `/meta` | Kateqoriyalar, şəhərlər, qiymətlər |
 
 ---
@@ -115,7 +119,7 @@ pnpm dev:web
 
 Sayt: http://localhost:3000. API: http://localhost:4000.
 
-**Demo hesablar** (seed-dən): `elvin@demo.az`, `tural@demo.az`, `aysel@demo.az` … şifrə `Demo12345!`
+**Demo hesablar** (seed-dən): `elvin@demo.az`, `tural@demo.az`, `aysel@demo.az` … şifrə `Demo12345!`. Mağaza hesabı: `texnobazar@demo.az` (eyni şifrə).
 **Admin**: `admin@deyis.az` / `Admin12345!` (`.env`-də dəyişin)
 
 Test rejimində (`PAYMENT_PROVIDER=mock`) balans artırma dərhal uğurlu olur, SMS kodu həmişə `111111`-dir.

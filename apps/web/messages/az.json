@@ -27,7 +27,10 @@
     "searchPlaceholder": "iPhone, velosiped, PS5… axtar",
     "categories": "Kateqoriyalar",
     "menu": "Menyu",
-    "language": "Dil"
+    "language": "Dil",
+    "stores": "Mağazalar",
+    "myStore": "Mağazam",
+    "openStore": "Mağaza aç"
   },
   "common": {
     "loading": "Yüklənir…",
@@ -266,7 +269,13 @@
     "noResults": "Heç nə tapılmadı",
     "noResultsSub": "Filtrləri dəyiş və ya ilk elanı sən yerləşdir!",
     "vipStrip": "VIP təkliflər",
-    "showResults": "Nəticələri göstər"
+    "showResults": "Nəticələri göstər",
+    "swapType": "Takas növü",
+    "swapAll": "Hamısı",
+    "seller": "Satıcı",
+    "sellerAll": "Hamısı",
+    "sellerStore": "Mağazalar",
+    "sellerPerson": "Şəxsi"
   },
   "form": {
     "createTitle": "Yeni elan",
@@ -309,7 +318,11 @@
     "tip1": "Gün işığında, təmiz fonda şəkil çək",
     "tip2": "Qüsurları gizlətmə — etibar qazandırır",
     "tip3": "Real dəyər yaz — ədalətli təkliflər gələcək",
-    "tip4": "Nə istədiyini konkret yaz"
+    "tip4": "Nə istədiyini konkret yaz",
+    "swapType": "Takas növü",
+    "swapTypeHint": "Pul fərqini necə həll etmək istəyirsən?",
+    "extraPay": "Üstünə nə qədər verə bilərsən?",
+    "extraWant": "Üstünə nə qədər istəyirsən?"
   },
   "offer": {
     "title": "Takas təklifi",
@@ -377,7 +390,12 @@
       "met": "Görüş",
       "done": "Tamam"
     },
-    "theyAdd": "Onlar üstünə versin"
+    "theyAdd": "Onlar üstünə versin",
+    "evenOnly": "Bu elan yalnız başa baş dəyişilir — pul əlavə etmək olmaz.",
+    "hintWantExtra": "Sahibi əşyasının üstünə pul istəyir.",
+    "hintWantExtraOwner": "Sən üstünə pul istəyirsən — qarşı tərəf pul əlavə edə bilər.",
+    "hintPayExtra": "Sahibi üstünə pul verməyə hazırdır — fərqi istəyə bilərsən.",
+    "hintPayExtraOwner": "Sən üstünə pul verməyə hazırsan."
   },
   "chat": {
     "title": "Mesajlar",
@@ -586,7 +604,9 @@
       "referral_reward": "Dəvət bonusu: {boosts} pulsuz irəli çəkmə qazandın 🎁",
       "listing_rejected": "\"{title}\" elanı moderasiyadan keçmədi",
       "welcome": "Dəyiş-ə xoş gəldin! Hədiyyə: pulsuz irəli çəkmə 🎁",
-      "match_found": "Sənə uyğun yeni takas tapıldı"
+      "match_found": "Sənə uyğun yeni takas tapıldı",
+      "store_created": "\"{name}\" mağazan açıldı! 🏪 İlk elanını əlavə et",
+      "store_verified": "\"{name}\" mağazası təsdiqləndi ✅"
     }
   },
   "admin": {
@@ -617,7 +637,14 @@
     "advertiser": "Reklamverən",
     "impressions": "Göstərilmə",
     "clicks": "Klik",
-    "noReports": "Açıq şikayət yoxdur"
+    "noReports": "Açıq şikayət yoxdur",
+    "stores": "Mağazalar",
+    "verify": "Təsdiqlə",
+    "unverify": "Təsdiqi götür",
+    "activate": "Aktivləşdir",
+    "deactivate": "Deaktiv et",
+    "storeOwner": "Sahibi",
+    "inactive": "Deaktiv"
   },
   "ads": {
     "yourAdHere": "Reklamınız burada ola bilər",
@@ -678,6 +705,103 @@
     "invalid_phone": "Nömrə +994XXXXXXXXX formatında olmalıdır",
     "listing_in_active_trade": "Bu əşya aktiv takasdadır",
     "server_error": "Server xətası. Bir az sonra yenidən cəhd edin",
-    "network": "İnternet bağlantısını yoxlayın"
+    "network": "İnternet bağlantısını yoxlayın",
+    "even_swap_only": "Bu elan yalnız başa baş dəyişilir",
+    "cash_direction_mismatch": "Bu elanın takas növünə uyğun pul istiqaməti deyil",
+    "store_exists": "Sənin artıq mağazan var",
+    "slug_taken": "Bu ünvan artıq tutulub",
+    "invalid_slug": "Ünvan yalnız kiçik latın hərfləri, rəqəm və \"-\" ola bilər",
+    "invalid_url": "Sayt ünvanı https:// ilə başlamalıdır",
+    "no_file": "Fayl seçilməyib"
+  },
+  "swap": {
+    "short": {
+      "ANY": "Pul fərqi olar",
+      "EVEN": "Başa baş",
+      "PAY_EXTRA": "Üstünə verir",
+      "WANT_EXTRA": "Üstünə istəyir"
+    },
+    "paysAmount": "Üstünə {amount} verir",
+    "wantsAmount": "Üstünə {amount} istəyir",
+    "type": {
+      "ANY": "Pul fərqi olar",
+      "EVEN": "Başa baş",
+      "PAY_EXTRA": "Üstünə pul verirəm",
+      "WANT_EXTRA": "Üstünə pul istəyirəm"
+    },
+    "desc": {
+      "ANY": "Hər iki tərəf pul əlavə edə bilər",
+      "EVEN": "Yalnız əşya-əşyaya, pulsuz",
+      "PAY_EXTRA": "Daha bahalı əşya üçün fərqi mən verirəm",
+      "WANT_EXTRA": "Əşyamın üstünə pul da istəyirəm"
+    },
+    "homeTitle": "Necə dəyişmək istəyirsən?",
+    "homeSub": "Hər elanda takas növü göstərilir — sürpriz yoxdur.",
+    "see": "Elanlara bax"
+  },
+  "stores": {
+    "tag": "Mağaza",
+    "verified": "Təsdiqlənmiş",
+    "unverified": "Təsdiq gözlənilir",
+    "visit": "Mağazaya keç",
+    "title": "Mağazalar",
+    "sub": "Texnika, uşaq əşyaları, kitab — mağazalar da takas edir. Köhnəni gətir, yenisini al.",
+    "searchPh": "Mağaza axtar…",
+    "allCities": "Bütün şəhərlər",
+    "empty": "Mağaza tapılmadı",
+    "emptySub": "Axtarışı dəyiş və ya ilk mağazanı sən aç!",
+    "listingsCount": "{count} elan",
+    "tradesCount": "{count} takas",
+    "openCta": "Mağaza aç",
+    "openTitle": "Biznesin var? Mağaza aç",
+    "openSub": "Trade-in, köhnəni yeniyə dəyişmə, ikinci əl — müştərilər səni \"Mağaza\" teqi ilə tanısın.",
+    "b1": "{count} aktiv elana qədər",
+    "b2": "Elanlarında \"Mağaza\" teqi",
+    "b3": "Öz mağaza səhifən və linkin",
+    "b4": "Təsdiqlənmiş nişanı",
+    "createTitle": "Mağazanı yarat",
+    "manageTitle": "Mağazamı idarə et",
+    "name": "Mağazanın adı",
+    "namePh": "məs. TexnoBazar Bakı",
+    "slug": "Mağaza ünvanı",
+    "slugHint": "Boş qoysan, addan avtomatik yaranacaq",
+    "tagline": "Qısa şüar",
+    "taglinePh": "Köhnəni gətir, yenisini apar",
+    "description": "Mağaza haqqında",
+    "descriptionPh": "Nə satırsınız, hansı əşyaları qəbul edirsiniz, zəmanət…",
+    "city": "Şəhər",
+    "address": "Ünvan",
+    "phone": "Telefon",
+    "instagram": "Instagram",
+    "website": "Sayt",
+    "hours": "İş saatları",
+    "hoursPh": "B.e–Şənbə 10:00–20:00",
+    "categories": "Mağazanın kateqoriyaları",
+    "coverColor": "Mağaza rəngi",
+    "logo": "Loqo",
+    "uploadLogo": "Loqo yüklə",
+    "create": "Mağazanı aç",
+    "save": "Yadda saxla",
+    "saved": "Yadda saxlanıldı",
+    "created": "Mağazan açıldı! 🎉",
+    "close": "Mağazanı bağla",
+    "closeConfirm": "Mağazanı bağlamaq istəyirsən? Elanların adi elan kimi qalacaq.",
+    "closed": "Mağaza bağlandı",
+    "reopenHint": "Mağazan bağlıdır. Yadda saxlasan, yenidən açılacaq.",
+    "newListing": "Yeni elan",
+    "viewStore": "Mağazaya bax",
+    "listings": "Mağazanın elanları",
+    "reviews": "Rəylər",
+    "noReviews": "Hələ rəy yoxdur",
+    "noListings": "Mağazada hələ elan yoxdur",
+    "about": "Haqqında",
+    "contact": "Əlaqə",
+    "since": "Dəyiş-də {date}-dən",
+    "verifyNote": "Ad dəyişsə, təsdiq nişanı yenidən yoxlanılır.",
+    "homeTitle": "Mağazalar da takas edir",
+    "homeSub": "Köhnə telefonunu gətir, üstünə az pul ver — yenisini apar.",
+    "allStores": "Bütün mağazalar",
+    "limitNote": "Mağaza: {count} aktiv elan limiti",
+    "preview": "Önizləmə"
   }
 }

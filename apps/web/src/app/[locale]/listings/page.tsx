@@ -4,7 +4,7 @@ import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SlidersHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Store as StoreIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
@@ -13,7 +13,8 @@ import { ListingGrid, ListingGridSkeleton } from '@/components/ListingCard';
 import { AdSlot } from '@/components/AdSlot';
 import { Select } from '@/components/Select';
 import { EmptyState, Emoji } from '@/components/ui';
-import type { ListingCard, Paged, Condition } from '@/lib/types';
+import type { ListingCard, Paged, Condition, SwapType } from '@/lib/types';
+import { SWAP_STYLE } from '@/lib/swap';
 import { formatNumber } from '@/lib/format';
 
 const CONDITIONS: Condition[] = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'FOR_PARTS'];
@@ -44,7 +45,7 @@ function Explore() {
   const category = sp.get('category') ?? '';
   const activeCat = meta?.categories.find((c) => c.slug === category);
   const page = Number(sp.get('page') ?? 1);
-  const activeFilters = ['city', 'condition', 'minValue', 'maxValue', 'wants', 'acceptsCash', 'canShip'].filter((k) => sp.get(k)).length;
+  const activeFilters = ['city', 'condition', 'minValue', 'maxValue', 'wants', 'swapType', 'seller', 'store', 'canShip'].filter((k) => sp.get(k)).length;
 
   const title = useMemo(() => {
     if (sp.get('q')) return `“${sp.get('q')}”`;
@@ -109,16 +110,51 @@ function Explore() {
           ))}
         </Select>
       </div>
+      <div>
+        <label className="label">{t('explore.swapType')}</label>
+        <div className="flex flex-wrap gap-2">
+          {(['EVEN', 'WANT_EXTRA', 'PAY_EXTRA', 'ANY'] as SwapType[]).map((k) => {
+            const on = sp.get('swapType') === k;
+            const Icon = SWAP_STYLE[k].icon;
+            return (
+              <button key={k} onClick={() => set({ swapType: on ? null : k })} className={clsx('chip', on && SWAP_STYLE[k].cls, on && 'shadow-sm')}>
+                <Icon className="h-3.5 w-3.5" strokeWidth={3} />
+                {t(`swap.type.${k}`)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <label className="label">{t('explore.seller')}</label>
+        <div className="grid grid-cols-3 gap-1 rounded-2xl border-[2.5px] border-ink bg-white p-1">
+          {(
+            [
+              ['', t('explore.sellerAll')],
+              ['store', t('explore.sellerStore')],
+              ['person', t('explore.sellerPerson')],
+            ] as const
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => set({ seller: k || null, store: null })}
+              className={clsx('rounded-xl px-2 py-2 text-xs font-extrabold transition', (sp.get('seller') ?? '') === k ? 'bg-ink text-white' : 'text-ink-soft hover:bg-cream')}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="space-y-2">
-        {(['acceptsCash', 'canShip'] as const).map((k) => (
-          <label key={k} className="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-line bg-white px-4 py-3 text-sm font-semibold">
+        {(['canShip'] as const).map((k) => (
+          <label key={k} className="flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-ink bg-white px-4 py-3 text-sm font-semibold">
             <input type="checkbox" className="h-5 w-5 accent-nar-500" checked={sp.get(k) === '1'} onChange={(e) => set({ [k]: e.target.checked ? '1' : null })} />
             {t(`explore.${k}`)}
           </label>
         ))}
       </div>
       {activeFilters > 0 && (
-        <button onClick={() => set({ city: null, condition: null, minValue: null, maxValue: null, wants: null, acceptsCash: null, canShip: null })} className="btn btn-ghost btn-sm w-full">
+        <button onClick={() => set({ city: null, condition: null, minValue: null, maxValue: null, wants: null, swapType: null, seller: null, store: null, canShip: null })} className="btn btn-ghost btn-sm w-full">
           <X className="h-4 w-4" />
           {t('common.reset')}
         </button>
@@ -150,7 +186,7 @@ function Explore() {
           <button onClick={() => setDrawer(true)} className="btn btn-outline btn-sm lg:hidden">
             <SlidersHorizontal className="h-4 w-4" />
             {t('common.filters')}
-            {activeFilters > 0 && <span className="flex h-5 w-5 items-center justify-center rounded-full bg-nar-500 text-[11px] text-white">{activeFilters}</span>}
+            {activeFilters > 0 && <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-ink bg-nar-500 font-mono text-[11px] text-white">{activeFilters}</span>}
           </button>
           <Select value={sp.get('sort') ?? 'new'} onChange={(e) => set({ sort: e.target.value === 'new' ? null : e.target.value })} className="w-44">
             <option value="new">{t('explore.sortNew')}</option>
@@ -161,14 +197,32 @@ function Explore() {
         </div>
       </div>
 
+      {/* Sürətli filtrlər: takas növü + mağazalar */}
+      <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0">
+        <button onClick={() => set({ seller: sp.get('seller') === 'store' ? null : 'store', store: null })} className={clsx('chip shrink-0', sp.get('seller') === 'store' && 'bg-lale-500 text-white shadow-sm')}>
+          <StoreIcon className="h-3.5 w-3.5" strokeWidth={3} />
+          {t('explore.sellerStore')}
+        </button>
+        {(['EVEN', 'WANT_EXTRA', 'PAY_EXTRA'] as SwapType[]).map((k) => {
+          const on = sp.get('swapType') === k;
+          const Icon = SWAP_STYLE[k].icon;
+          return (
+            <button key={k} onClick={() => set({ swapType: on ? null : k })} className={clsx('chip shrink-0', on && SWAP_STYLE[k].cls, on && 'shadow-sm')}>
+              <Icon className="h-3.5 w-3.5" strokeWidth={3} />
+              {t(`swap.type.${k}`)}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="mt-6 grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="hidden lg:block">
-          <div className="sticky top-24 rounded-3xl border border-line bg-white p-5">{filters}</div>
+          <div className="sticky top-24 rounded-3xl border-[2.5px] border-ink bg-white p-5">{filters}</div>
         </aside>
 
         <div className="min-w-0">
           {data && data.vip.length > 0 && page === 1 && (
-            <div className="mb-6 rounded-4xl bg-gradient-to-br from-zefran-100 to-zefran-50 p-4 ring-1 ring-zefran-200">
+            <div className="mb-6 rounded-4xl bg-zefran-300 p-4 border-[2.5px] border-ink shadow-card">
               <div className="mb-3 font-display text-sm font-bold">⭐ {t('explore.vipStrip')}</div>
               <ListingGrid items={data.vip} className="lg:grid-cols-3 xl:grid-cols-4" />
             </div>
@@ -220,13 +274,13 @@ function Explore() {
           <div className="fixed inset-0 z-[80] lg:hidden">
             <motion.div className="absolute inset-0 bg-ink/50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDrawer(false)} />
             <motion.div
-              className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-4xl bg-cream p-5 pb-8"
+              className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-4xl border-t-[2.5px] border-ink bg-cream p-5 pb-8"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 360, damping: 34 }}
             >
-              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-ink/15" />
+              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-ink" />
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-display text-lg font-bold">{t('common.filters')}</h2>
                 <button onClick={() => setDrawer(false)} className="btn-icon" aria-label="close">

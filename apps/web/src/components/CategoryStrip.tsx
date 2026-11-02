@@ -21,16 +21,16 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
         >
           <Link
             href={`/listings?category=${c.slug}`}
-            className="group flex h-full w-[104px] flex-col items-center rounded-3xl border border-line bg-white px-2 pb-3 pt-4 text-center transition duration-200 hover:-translate-y-1 hover:border-transparent hover:shadow-lift sm:w-auto"
+            className="group flex h-full w-[104px] flex-col items-center rounded-3xl border-[2.5px] border-ink bg-white px-2 pb-3 pt-4 text-center transition duration-200 shadow-sm hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-card sm:w-auto"
           >
             <span
-              className="flex h-16 w-16 items-center justify-center rounded-2xl transition duration-300 group-hover:scale-110 group-hover:rotate-[-6deg]"
-              style={{ backgroundColor: `${c.color}14` }}
+              className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-ink transition duration-300 group-hover:rotate-[-6deg]"
+              style={{ backgroundColor: `${c.color}33` }}
             >
               <Emoji name={c.icon} size={44} />
             </span>
             <span className="mt-2.5 line-clamp-2 text-[12.5px] font-bold leading-tight text-ink">{c.name[locale] ?? c.name.az}</span>
-            {typeof c.count === 'number' && <span className="mt-1 text-[11px] font-semibold text-ink-mute">{c.count}</span>}
+            {typeof c.count === 'number' && <span className="mt-1 font-mono text-[11px] font-bold text-ink-mute">{c.count}</span>}
           </Link>
         </motion.div>
       ))}

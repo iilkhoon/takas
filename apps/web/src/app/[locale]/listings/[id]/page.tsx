@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Banknote, Eye, Heart, MapPin, Repeat2, ShieldCheck, Sparkles, Truck, Clock, Tag, ChevronRight } from 'lucide-react';
+import { BadgeCheck, Store as StoreIcon, Eye, Heart, MapPin, Repeat2, ShieldCheck, Sparkles, Truck, Clock, Tag, ChevronRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { serverApi } from '@/lib/server-api';
 import { formatAzn, formatDate, timeAgo } from '@/lib/format';
@@ -11,6 +11,7 @@ import { ListingActions } from '@/components/listing/ListingActions';
 import { ListingGrid } from '@/components/ListingCard';
 import { AdSlot } from '@/components/AdSlot';
 import { Avatar, Emoji, LevelBadge, Stars, TrustBadges } from '@/components/ui';
+import { StoreTag, SwapBadge } from '@/components/Tags';
 
 export const dynamic = 'force-dynamic';
 
@@ -99,7 +100,7 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
           </section>
 
           <section className="card overflow-hidden">
-            <div className="flex items-center gap-3 bg-gradient-to-r from-xezer-500 to-xezer-600 px-6 py-4 text-white">
+            <div className="flex items-center gap-3 border-b-[2.5px] border-ink bg-xezer-400 px-6 py-4 text-ink">
               <Repeat2 className="h-6 w-6" />
               <h2 className="font-display text-lg font-bold">{t('listing.wantedTitle')}</h2>
             </div>
@@ -116,15 +117,10 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
                 </div>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
-                {l.openToAnything && <span className="badge bg-lale-50 text-lale-700 normal-case tracking-normal">✨ {t('listing.openToAnything')}</span>}
-                {l.acceptsCash && (
-                  <span className="badge bg-xezer-50 text-xezer-700 normal-case tracking-normal">
-                    <Banknote className="h-3.5 w-3.5" />
-                    {t('listing.acceptsCash')}
-                  </span>
-                )}
+                {l.openToAnything && <span className="badge bg-lale-100 text-ink">✨ {t('listing.openToAnything')}</span>}
+                <SwapBadge type={l.swapType} amount={l.extraCash} size="lg" />
                 {l.canShip && (
-                  <span className="badge bg-zefran-50 text-zefran-800 normal-case tracking-normal">
+                  <span className="badge bg-zefran-200 text-ink">
                     <Truck className="h-3.5 w-3.5" />
                     {t('listing.canShip')}
                   </span>
@@ -141,7 +137,7 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
               <ListingActions listing={l} />
             </div>
             <OwnerCard l={l} t={t} />
-            <div className="flex gap-3 rounded-3xl bg-xezer-50 p-4 text-sm text-xezer-800 ring-1 ring-xezer-100">
+            <div className="flex gap-3 rounded-3xl border-[2.5px] border-ink bg-xezer-100 p-4 text-sm text-ink">
               <ShieldCheck className="h-5 w-5 shrink-0" />
               <span>
                 {t('listing.safetyTip')}{' '}
@@ -183,7 +179,7 @@ function Summary({ l, locale, t }: { l: ListingDetail; locale: string; t: T }) {
       <div className="mt-4 flex items-end justify-between gap-4">
         <div>
           <div className="text-xs font-semibold text-ink-mute">{t('listing.estimated')}</div>
-          <div className="font-display text-3xl font-black text-nar-500">≈ {formatAzn(l.estimatedValue, locale)}</div>
+          <div className="font-mono text-3xl font-extrabold tracking-tight text-ink">≈ {formatAzn(l.estimatedValue, locale)}</div>
         </div>
         <div className="flex gap-3 text-sm font-semibold text-ink-mute">
           <span className="flex items-center gap-1">
@@ -196,12 +192,49 @@ function Summary({ l, locale, t }: { l: ListingDetail; locale: string; t: T }) {
           </span>
         </div>
       </div>
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <SwapBadge type={l.swapType} amount={l.extraCash} size="lg" />
+        {l.owner.store && <StoreTag store={l.owner.store} link className="px-3 py-1.5 text-xs" />}
+      </div>
     </div>
   );
 }
 
 function OwnerCard({ l, t }: { l: ListingDetail; t: T }) {
   const o = l.owner;
+  if (o.store) {
+    const st = o.store;
+    return (
+      <Link href={`/stores/${st.slug}`} className="card group block overflow-hidden transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift">
+        <div className="flex items-center gap-2 border-b-[2.5px] border-ink bg-lale-500 px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-white">
+          <StoreIcon className="h-4 w-4" />
+          {t('stores.tag')}
+          {st.verified && (
+            <span className="ml-auto flex items-center gap-1">
+              <BadgeCheck className="h-4 w-4" /> {t('stores.verified')}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-4 p-5">
+          <Avatar name={st.name} url={st.logoUrl} size={56} square />
+          <div className="min-w-0 flex-1">
+            <div className="truncate font-display text-lg font-extrabold">{st.name}</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink-mute">
+              {o.rating !== null && (
+                <span className="flex items-center gap-1">
+                  <Stars value={o.rating} size={12} /> {o.rating} ({o.ratingCount})
+                </span>
+              )}
+              <span>
+                {o.completedTrades} {t('profile.trades')} · {o.activeListings} {t('profile.listings').toLowerCase()}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-bold text-lale-600 group-hover:underline">{t('stores.visit')} →</div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
   return (
     <Link href={`/users/${o.id}`} className="card group flex items-center gap-4 p-5 transition hover:shadow-lift">
       <Avatar name={o.name} url={o.avatarUrl} size={56} />

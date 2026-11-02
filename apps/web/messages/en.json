@@ -27,7 +27,10 @@
     "searchPlaceholder": "Search iPhone, bike, PS5…",
     "categories": "Categories",
     "menu": "Menu",
-    "language": "Language"
+    "language": "Language",
+    "stores": "Stores",
+    "myStore": "My store",
+    "openStore": "Open a store"
   },
   "common": {
     "loading": "Loading…",
@@ -266,7 +269,13 @@
     "noResults": "Nothing found",
     "noResultsSub": "Change the filters or be the first to post!",
     "vipStrip": "VIP offers",
-    "showResults": "Show results"
+    "showResults": "Show results",
+    "swapType": "Swap type",
+    "swapAll": "All",
+    "seller": "Seller",
+    "sellerAll": "All",
+    "sellerStore": "Stores",
+    "sellerPerson": "Private"
   },
   "form": {
     "createTitle": "New listing",
@@ -309,7 +318,11 @@
     "tip1": "Shoot in daylight on a clean background",
     "tip2": "Don't hide flaws — honesty builds trust",
     "tip3": "State a realistic value to get fair offers",
-    "tip4": "Be specific about what you want"
+    "tip4": "Be specific about what you want",
+    "swapType": "Swap type",
+    "swapTypeHint": "How do you want to handle the price difference?",
+    "extraPay": "How much can you add?",
+    "extraWant": "How much do you want on top?"
   },
   "offer": {
     "title": "Swap offer",
@@ -377,7 +390,12 @@
       "met": "Meeting",
       "done": "Done"
     },
-    "theyAdd": "They add cash"
+    "theyAdd": "They add cash",
+    "evenOnly": "This listing is even swap only — no cash can be added.",
+    "hintWantExtra": "The owner wants cash on top of their item.",
+    "hintWantExtraOwner": "You want cash on top — the other side can add cash.",
+    "hintPayExtra": "The owner is ready to add cash — you can ask for the difference.",
+    "hintPayExtraOwner": "You're ready to add cash on top."
   },
   "chat": {
     "title": "Messages",
@@ -586,7 +604,9 @@
       "referral_reward": "Invite bonus: you earned {boosts} free bumps 🎁",
       "listing_rejected": "\"{title}\" did not pass moderation",
       "welcome": "Welcome to Dəyiş! Gift: a free bump 🎁",
-      "match_found": "A new swap match was found for you"
+      "match_found": "A new swap match was found for you",
+      "store_created": "Your store \"{name}\" is open! 🏪 Add your first listing",
+      "store_verified": "Store \"{name}\" has been verified ✅"
     }
   },
   "admin": {
@@ -617,7 +637,14 @@
     "advertiser": "Advertiser",
     "impressions": "Impressions",
     "clicks": "Clicks",
-    "noReports": "No open reports"
+    "noReports": "No open reports",
+    "stores": "Stores",
+    "verify": "Verify",
+    "unverify": "Unverify",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "storeOwner": "Owner",
+    "inactive": "Inactive"
   },
   "ads": {
     "yourAdHere": "Your ad could be here",
@@ -678,6 +705,103 @@
     "invalid_phone": "Number must be in +994XXXXXXXXX format",
     "listing_in_active_trade": "This item is in an active swap",
     "server_error": "Server error. Please try again later",
-    "network": "Check your internet connection"
+    "network": "Check your internet connection",
+    "even_swap_only": "This listing is even swap only",
+    "cash_direction_mismatch": "Cash direction doesn't match this listing's swap type",
+    "store_exists": "You already have a store",
+    "slug_taken": "This address is already taken",
+    "invalid_slug": "Address may only contain lowercase latin letters, digits and \"-\"",
+    "invalid_url": "Website must start with https://",
+    "no_file": "No file selected"
+  },
+  "swap": {
+    "short": {
+      "ANY": "Cash difference OK",
+      "EVEN": "Even swap",
+      "PAY_EXTRA": "Adds cash",
+      "WANT_EXTRA": "Wants cash"
+    },
+    "paysAmount": "Adds {amount} on top",
+    "wantsAmount": "Wants {amount} on top",
+    "type": {
+      "ANY": "Cash difference OK",
+      "EVEN": "Even swap",
+      "PAY_EXTRA": "I'll add cash",
+      "WANT_EXTRA": "I want cash on top"
+    },
+    "desc": {
+      "ANY": "Either side can add cash",
+      "EVEN": "Item for item only, no cash",
+      "PAY_EXTRA": "I pay the difference for a pricier item",
+      "WANT_EXTRA": "I want some cash on top of my item"
+    },
+    "homeTitle": "How do you want to swap?",
+    "homeSub": "Every listing shows its swap type — no surprises.",
+    "see": "See listings"
+  },
+  "stores": {
+    "tag": "Store",
+    "verified": "Verified",
+    "unverified": "Pending verification",
+    "visit": "Visit store",
+    "title": "Stores",
+    "sub": "Electronics, kids stuff, books — stores swap too. Bring the old, take the new.",
+    "searchPh": "Search stores…",
+    "allCities": "All cities",
+    "empty": "No stores found",
+    "emptySub": "Change your search or open the first store yourself!",
+    "listingsCount": "{count} listings",
+    "tradesCount": "{count} swaps",
+    "openCta": "Open a store",
+    "openTitle": "Got a business? Open a store",
+    "openSub": "Trade-ins, old-for-new, second hand — let customers find you by the \"Store\" tag.",
+    "b1": "Up to {count} active listings",
+    "b2": "\"Store\" tag on your listings",
+    "b3": "Your own store page and link",
+    "b4": "Verified badge",
+    "createTitle": "Create your store",
+    "manageTitle": "Manage my store",
+    "name": "Store name",
+    "namePh": "e.g. TexnoBazar Baku",
+    "slug": "Store address",
+    "slugHint": "Leave empty to generate from the name",
+    "tagline": "Short tagline",
+    "taglinePh": "Bring the old, take the new",
+    "description": "About the store",
+    "descriptionPh": "What you sell, what you accept, warranty…",
+    "city": "City",
+    "address": "Address",
+    "phone": "Phone",
+    "instagram": "Instagram",
+    "website": "Website",
+    "hours": "Opening hours",
+    "hoursPh": "Mon–Sat 10:00–20:00",
+    "categories": "Store categories",
+    "coverColor": "Store color",
+    "logo": "Logo",
+    "uploadLogo": "Upload logo",
+    "create": "Open store",
+    "save": "Save",
+    "saved": "Saved",
+    "created": "Your store is open! 🎉",
+    "close": "Close store",
+    "closeConfirm": "Close your store? Your listings will stay as regular listings.",
+    "closed": "Store closed",
+    "reopenHint": "Your store is closed. Save to reopen it.",
+    "newListing": "New listing",
+    "viewStore": "View store",
+    "listings": "Store listings",
+    "reviews": "Reviews",
+    "noReviews": "No reviews yet",
+    "noListings": "No listings yet",
+    "about": "About",
+    "contact": "Contact",
+    "since": "On Dəyiş since {date}",
+    "verifyNote": "Changing the name resets the verified badge.",
+    "homeTitle": "Stores swap too",
+    "homeSub": "Bring your old phone, add a little cash — take a new one.",
+    "allStores": "All stores",
+    "limitNote": "Store: {count} active listings limit",
+    "preview": "Preview"
   }
 }

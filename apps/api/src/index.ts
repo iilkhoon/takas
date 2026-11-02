@@ -18,6 +18,7 @@ import userRoutes from './routes/users';
 import walletRoutes from './routes/wallet';
 import adminRoutes from './routes/admin';
 import miscRoutes from './routes/misc';
+import storeRoutes from './routes/stores';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -58,6 +59,7 @@ v1.use('/offers', offerRoutes);
 v1.use('/conversations', conversationRoutes);
 v1.use('/users', userRoutes);
 v1.use('/wallet', walletRoutes);
+v1.use('/stores', storeRoutes);
 v1.use('/admin', adminRoutes);
 v1.use('/', miscRoutes);
 v1.use((_req, res) => res.status(404).json({ error: 'not_found' }));

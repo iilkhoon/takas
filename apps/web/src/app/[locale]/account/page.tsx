@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronRight, Flame, Gem, Heart, Layers, LogOut, Repeat2, Settings, Shield, User, Wallet, Bell, LayoutGrid } from 'lucide-react';
+import { ChevronRight, Flame, Gem, Heart, Layers, LogOut, Repeat2, Settings, Shield, User, Wallet, Bell, LayoutGrid, Store as StoreIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useRequireAuth } from '@/lib/hooks';
@@ -18,11 +18,13 @@ export default function AccountPage() {
   const items = [
     { href: `/users/${me.id}`, icon: User, label: t('profile') },
     { href: '/my-listings', icon: Layers, label: t('myListings') },
+    { href: '/store', icon: StoreIcon, label: me.store ? t('myStore') : t('openStore') },
     { href: '/offers', icon: Repeat2, label: t('offers'), badge: counters.pendingOffers },
     { href: '/notifications', icon: Bell, label: t('notifications'), badge: counters.unreadNotifications },
     { href: '/favorites', icon: Heart, label: t('favorites') },
     { href: '/matches', icon: Flame, label: t('matches') },
     { href: '/listings', icon: LayoutGrid, label: t('explore') },
+    { href: '/stores', icon: StoreIcon, label: t('stores') },
     { href: '/wallet', icon: Wallet, label: t('wallet') },
     { href: '/pricing', icon: Gem, label: t('pricing') },
     { href: '/settings', icon: Settings, label: t('settings') },
@@ -40,16 +42,16 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
-      <div className="card mt-4 divide-y divide-line overflow-hidden">
+      <div className="card mt-4 divide-y-2 divide-ink overflow-hidden">
         {items.map((it) => (
           <Link key={it.href} href={it.href} className="flex items-center gap-3 px-5 py-4 font-semibold transition hover:bg-cream">
             <it.icon className="h-5 w-5 text-ink-soft" />
             {it.label}
-            {!!it.badge && <span className="ml-auto rounded-full bg-nar-500 px-2 py-0.5 text-xs font-bold text-white">{it.badge}</span>}
+            {!!it.badge && <span className="ml-auto rounded-full border-2 border-ink bg-nar-500 px-2 py-0.5 font-mono text-xs font-bold text-white">{it.badge}</span>}
             <ChevronRight className={`h-4 w-4 text-ink-mute ${it.badge ? '' : 'ml-auto'}`} />
           </Link>
         ))}
-        <button onClick={async () => { await logout(); router.push('/'); }} className="flex w-full items-center gap-3 px-5 py-4 font-semibold text-nar-600 transition hover:bg-nar-50">
+        <button onClick={async () => { await logout(); router.push('/'); }} className="flex w-full items-center gap-3 px-5 py-4 font-semibold text-nar-600 transition hover:bg-nar-100">
           <LogOut className="h-5 w-5" />
           {t('logout')}
         </button>

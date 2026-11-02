@@ -158,6 +158,8 @@ export function ListingActions({ listing }: { listing: ListingDetail }) {
             title: listing.title,
             estimatedValue: listing.estimatedValue,
             acceptsCash: listing.acceptsCash,
+            swapType: listing.swapType,
+            extraCash: listing.extraCash,
             image: listing.images[0] ?? null,
             icon: listing.category.icon,
           }}

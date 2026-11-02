@@ -38,7 +38,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 'pointer-events-auto flex max-w-md items-center gap-2.5 rounded-2xl px-4 py-3 text-sm font-bold shadow-lift',
                 t.kind === 'success' && 'bg-ink text-white',
                 t.kind === 'error' && 'bg-nar-600 text-white',
-                t.kind === 'info' && 'bg-white text-ink ring-1 ring-line',
+                t.kind === 'info' && 'bg-white text-ink border-[2.5px] border-ink',
               )}
             >
               {t.kind === 'success' && <CheckCircle2 className="h-5 w-5 shrink-0 text-xezer-300" />}

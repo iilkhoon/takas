@@ -41,6 +41,8 @@ export const pricing = {
   plusMonthly: 990,
   /** Plus abunəçilərinə hər ay verilən pulsuz irəli çəkmə sayı */
   plusMonthlyBoosts: 5,
+  /** Mağaza hesabı üçün aktiv elan limiti */
+  storeActiveListings: 50,
   /** Sadiqlik: hər N tamamlanmış takasdan sonra 1 pulsuz irəli çəkmə ("6-cı pulsuz") */
   loyaltyEvery: 5,
   /** Dəvət bonusu: dəvət olunan ilk elanını yerləşdirəndə hər iki tərəfə */

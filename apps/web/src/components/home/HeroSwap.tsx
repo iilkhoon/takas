@@ -37,7 +37,7 @@ export function HeroSwap() {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[460px]">
       {/* Fon dairələri */}
-      <div className="absolute inset-[8%] rounded-full bg-gradient-to-br from-nar-200 via-zefran-100 to-xezer-100" />
+      <div className="absolute inset-[8%] rounded-full border-[3px] border-ink bg-zefran-300" />
       <div className="absolute inset-[18%] animate-spin-slow rounded-full border-[3px] border-dashed border-ink/10" />
 
       {/* Üzən kiçik emojilər */}

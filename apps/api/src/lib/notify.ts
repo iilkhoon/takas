@@ -15,7 +15,9 @@ export type NotificationType =
   | 'referral_reward'
   | 'listing_rejected'
   | 'welcome'
-  | 'match_found';
+  | 'match_found'
+  | 'store_created'
+  | 'store_verified';
 
 export async function notify(userId: string, type: NotificationType, data: Record<string, unknown> = {}) {
   try {

@@ -6,32 +6,41 @@ const config: Config = {
     container: { center: true, padding: { DEFAULT: '1rem', sm: '1.5rem', lg: '2rem' }, screens: { '2xl': '1280px' } },
     extend: {
       colors: {
-        ink: { DEFAULT: '#14121F', soft: '#4A4658', mute: '#8A8597' },
-        cream: { DEFAULT: '#FFF8F1', deep: '#FBEEDF' },
-        line: '#EDE4DA',
+        // Neobrutalizm palitrası — parlaq, düz rənglər + qara konturlar
+        ink: { DEFAULT: '#0B0B0F', soft: '#3B3B45', mute: '#6E6E7A' },
+        cream: { DEFAULT: '#FFF7E8', deep: '#FFEBC7' },
+        line: '#0B0B0F',
+        // "Moruq" — əsas aksent (CTA, qiymətlər)
         nar: {
-          50: '#FFF0F2', 100: '#FFDDE2', 200: '#FFB8C3', 300: '#FF8A9C', 400: '#F95A72',
-          500: '#E8334A', 600: '#CF1F3A', 700: '#AD1530', 800: '#8C142C', 900: '#74142A',
+          50: '#FFF0F3', 100: '#FFD9E1', 200: '#FFB3C4', 300: '#FF85A1', 400: '#FF5C82',
+          500: '#FF2E63', 600: '#E0154D', 700: '#B30D3C', 800: '#8A0B30', 900: '#660824',
         },
+        // "Nanə" — uğur, istəklər
         xezer: {
-          50: '#E6FAF8', 100: '#C3F2EE', 200: '#8BE5DE', 300: '#4DD2C9', 400: '#1FBAB1',
-          500: '#0E9E97', 600: '#0A7F7B', 700: '#0C6563', 800: '#0F5150', 900: '#104342',
+          50: '#E9FFF5', 100: '#C6FBE3', 200: '#8EF4C8', 300: '#4FE7A8', 400: '#1FD68D',
+          500: '#00BF78', 600: '#009A61', 700: '#00784C', 800: '#065E3E', 900: '#074C34',
         },
+        // "Limon" — brend rəngi, VIP, bonuslar
         zefran: {
-          50: '#FFF9E6', 100: '#FFF0BF', 200: '#FFE38A', 300: '#FFD24D', 400: '#FFC21F',
-          500: '#FFB000', 600: '#DB8E00', 700: '#B06C00', 800: '#8F5507', 900: '#75450B',
+          50: '#FFFCE5', 100: '#FFF6B8', 200: '#FFEE85', 300: '#FFE54D', 400: '#FFDB1F',
+          500: '#FFCC00', 600: '#D9A800', 700: '#A67F00', 800: '#7A5D00', 900: '#5C4600',
         },
-        lale: { 50: '#F3EEFF', 100: '#E5DBFF', 400: '#9775FA', 500: '#7C4DFF', 600: '#6741D9', 700: '#5233B5' },
+        // "Göy" — Plus, mağazalar
+        lale: { 50: '#EEF1FF', 100: '#D9E0FF', 400: '#6B83FF', 500: '#3D5AFE', 600: '#2A44D9', 700: '#1F33A8' },
       },
       fontFamily: {
         display: ['var(--font-display)', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
-      borderRadius: { '4xl': '2rem' },
+      // Neobrutalizm: kiçik radiuslar
+      borderRadius: { xl: '0.625rem', '2xl': '0.75rem', '3xl': '0.875rem', '4xl': '1.125rem' },
       boxShadow: {
-        card: '0 1px 2px rgba(20,18,31,.04), 0 8px 24px -12px rgba(20,18,31,.12)',
-        lift: '0 2px 4px rgba(20,18,31,.05), 0 22px 40px -18px rgba(20,18,31,.28)',
-        pop: '0 4px 0 0 #14121F',
+        // Sərt (bulanıqlıqsız) kölgələr
+        card: '4px 4px 0 0 #0B0B0F',
+        lift: '7px 7px 0 0 #0B0B0F',
+        pop: '5px 5px 0 0 #0B0B0F',
+        sm: '2px 2px 0 0 #0B0B0F',
       },
       keyframes: {
         float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },

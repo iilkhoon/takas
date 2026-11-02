@@ -21,8 +21,7 @@ import {
   Wallet,
   Layers,
   Flame,
-  Gem,
-} from 'lucide-react';
+  Gem, Store as StoreIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
@@ -66,7 +65,7 @@ export function LanguageSwitcher({ compact }: { compact?: boolean }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-line bg-white p-1.5 shadow-lift"
+            className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border-[2.5px] border-ink bg-white p-1.5 shadow-lift"
           >
             {routing.locales.map((l) => (
               <button
@@ -99,7 +98,7 @@ function CountBadge({ n }: { n: number }) {
       key={n}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-nar-500 px-1 text-[10px] font-extrabold text-white ring-2 ring-white"
+      className="absolute -right-1 -top-1 flex h-[19px] min-w-[19px] items-center justify-center rounded-full border-2 border-ink bg-nar-500 px-1 font-mono text-[10px] font-bold text-white"
     >
       {n > 99 ? '99+' : n}
     </motion.span>
@@ -127,12 +126,12 @@ function SearchBar({ className }: { className?: string }) {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder={t('searchPlaceholder')}
-        className="h-12 w-full rounded-2xl border-2 border-line bg-cream/70 pl-12 pr-24 text-[15px] font-medium placeholder:text-ink-mute focus:border-nar-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-nar-100"
+        className="h-12 w-full rounded-xl border-[2.5px] border-ink bg-white pl-12 pr-14 text-[15px] font-medium placeholder:text-ink-mute transition focus:shadow-[4px_4px_0_0_#0B0B0F] focus:outline-none"
       />
       <button
         type="submit"
         aria-label="search"
-        className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl bg-ink text-white transition hover:bg-nar-500"
+        className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg border-2 border-ink bg-zefran-400 text-ink transition hover:bg-nar-500 hover:text-white"
       >
         <Search className="h-4 w-4" />
       </button>
@@ -152,6 +151,7 @@ function UserMenu() {
   const items = [
     { href: `/users/${me.id}`, icon: User, label: t('profile') },
     { href: '/my-listings', icon: Layers, label: t('myListings') },
+    { href: '/store', icon: StoreIcon, label: me.store ? t('myStore') : t('openStore') },
     { href: '/offers', icon: Repeat2, label: t('offers') },
     { href: '/favorites', icon: Heart, label: t('favorites') },
     { href: '/matches', icon: Flame, label: t('matches') },
@@ -173,9 +173,9 @@ function UserMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.16 }}
-            className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-3xl border border-line bg-white shadow-lift"
+            className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-3xl border-[2.5px] border-ink bg-white shadow-lift"
           >
-            <div className="flex items-center gap-3 border-b border-line bg-cream/60 p-4">
+            <div className="flex items-center gap-3 border-b-[2.5px] border-ink bg-zefran-300 p-4">
               <Avatar name={me.name} url={me.avatarUrl} size={44} />
               <div className="min-w-0">
                 <div className="truncate font-bold">{me.name}</div>
@@ -207,7 +207,7 @@ function UserMenu() {
                   await logout();
                   router.push('/');
                 }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-nar-600 transition hover:bg-nar-50"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-nar-600 transition hover:bg-nar-100"
               >
                 <LogOut className="h-[18px] w-[18px]" />
                 {t('logout')}
@@ -232,7 +232,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className={clsx('sticky top-0 z-40 border-b transition-all duration-300', scrolled ? 'border-line bg-white/85 backdrop-blur-xl' : 'border-transparent bg-cream/80 backdrop-blur')}>
+    <header className={clsx('sticky top-0 z-40 border-b-[2.5px] border-ink transition-colors duration-200', scrolled ? 'bg-white' : 'bg-cream')}>
       <div className="container flex h-16 items-center gap-3 md:h-[72px] md:gap-5">
         <Link href="/" className="shrink-0" aria-label="Dəyiş">
           <Logo />
@@ -246,6 +246,10 @@ export function Header() {
           <Link href="/discover" className="btn btn-ghost btn-sm">
             <Flame className="h-4 w-4 text-nar-500" />
             {t('discover')}
+          </Link>
+          <Link href="/stores" className="btn btn-ghost btn-sm">
+            <StoreIcon className="h-4 w-4 text-lale-500" />
+            {t('stores')}
           </Link>
         </nav>
 
@@ -303,24 +307,24 @@ export function MobileNav() {
     { href: me ? '/account' : '/login', icon: User, label: me ? t('profile') : t('login') },
   ];
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t-[2.5px] border-ink bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
       <div className="grid h-16 grid-cols-5">
         {items.map((it) => {
           const active = it.href === '/' ? pathname === '/' : pathname.startsWith(it.href);
           if (it.primary)
             return (
               <Link key={it.href} href={it.href} className="flex items-center justify-center" aria-label={it.label}>
-                <span className="-mt-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-nar-500 text-white shadow-[0_4px_0_0_theme(colors.nar.700)] transition active:translate-y-1 active:shadow-none">
+                <span className="-mt-6 flex h-14 w-14 items-center justify-center rounded-2xl border-[2.5px] border-ink bg-zefran-400 text-ink shadow-[3px_3px_0_0_#0B0B0F] transition active:translate-x-0.5 active:translate-y-0.5 active:shadow-none">
                   <Plus className="h-7 w-7" strokeWidth={3} />
                 </span>
               </Link>
             );
           return (
-            <Link key={it.href} href={it.href} className={clsx('relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold', active ? 'text-nar-500' : 'text-ink-mute')}>
+            <Link key={it.href} href={it.href} className={clsx('relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold', active ? 'text-ink' : 'text-ink-mute')}>
               <span className="relative">
                 <it.icon className="h-6 w-6" strokeWidth={active ? 2.5 : 2} />
                 {!!it.badge && (
-                  <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-nar-500 px-1 text-[9px] text-white ring-2 ring-white">
+                  <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-ink bg-nar-500 px-1 text-[9px] text-white">
                     {it.badge}
                   </span>
                 )}

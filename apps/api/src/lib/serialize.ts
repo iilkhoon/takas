@@ -12,14 +12,16 @@ export const publicUserSelect = {
   ratingCount: true,
   createdAt: true,
   lastSeenAt: true,
+  store: { select: { slug: true, name: true, logoUrl: true, verified: true, active: true } },
 } satisfies Prisma.UserSelect;
 
 export type PublicUserRow = Prisma.UserGetPayload<{ select: typeof publicUserSelect }>;
 
 export function publicUser(u: PublicUserRow) {
-  const { ratingSum, ratingCount, ...rest } = u;
+  const { ratingSum, ratingCount, store, ...rest } = u;
   return {
     ...rest,
+    store: store && store.active ? { slug: store.slug, name: store.name, logoUrl: store.logoUrl, verified: store.verified } : null,
     rating: ratingCount ? Math.round((ratingSum / ratingCount) * 10) / 10 : null,
     ratingCount,
     level: tradeLevel(u.completedTrades),
@@ -54,6 +56,8 @@ export function listingCard(l: ListingCardRow, favIds?: Set<string>) {
     wantedText: l.wantedText,
     wantedCategories: l.wantedCategories,
     acceptsCash: l.acceptsCash,
+    swapType: l.swapType,
+    extraCash: l.extraCash,
     openToAnything: l.openToAnything,
     canShip: l.canShip,
     status: l.status,

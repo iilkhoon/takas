@@ -27,7 +27,10 @@
     "searchPlaceholder": "iPhone, bisiklet, PS5… ara",
     "categories": "Kategoriler",
     "menu": "Menü",
-    "language": "Dil"
+    "language": "Dil",
+    "stores": "Mağazalar",
+    "myStore": "Mağazam",
+    "openStore": "Mağaza aç"
   },
   "common": {
     "loading": "Yükleniyor…",
@@ -266,7 +269,13 @@
     "noResults": "Hiçbir şey bulunamadı",
     "noResultsSub": "Filtreleri değiştir veya ilk ilanı sen ver!",
     "vipStrip": "VIP teklifler",
-    "showResults": "Sonuçları göster"
+    "showResults": "Sonuçları göster",
+    "swapType": "Takas türü",
+    "swapAll": "Hepsi",
+    "seller": "Satıcı",
+    "sellerAll": "Hepsi",
+    "sellerStore": "Mağazalar",
+    "sellerPerson": "Bireysel"
   },
   "form": {
     "createTitle": "Yeni ilan",
@@ -309,7 +318,11 @@
     "tip1": "Gün ışığında, temiz bir zeminde fotoğraf çek",
     "tip2": "Kusurları gizleme — güven kazandırır",
     "tip3": "Gerçek değer yaz — adil teklifler gelir",
-    "tip4": "Ne istediğini net yaz"
+    "tip4": "Ne istediğini net yaz",
+    "swapType": "Takas türü",
+    "swapTypeHint": "Fiyat farkını nasıl çözmek istersin?",
+    "extraPay": "Üste ne kadar verebilirsin?",
+    "extraWant": "Üste ne kadar istiyorsun?"
   },
   "offer": {
     "title": "Takas teklifi",
@@ -377,7 +390,12 @@
       "met": "Buluşma",
       "done": "Tamam"
     },
-    "theyAdd": "Üstüne onlar versin"
+    "theyAdd": "Üstüne onlar versin",
+    "evenOnly": "Bu ilan sadece başa baş takas edilir — para eklenemez.",
+    "hintWantExtra": "Sahibi eşyasının üstüne para istiyor.",
+    "hintWantExtraOwner": "Üste para istiyorsun — karşı taraf para ekleyebilir.",
+    "hintPayExtra": "Sahibi üste para vermeye hazır — farkı isteyebilirsin.",
+    "hintPayExtraOwner": "Üste para vermeye hazırsın."
   },
   "chat": {
     "title": "Mesajlar",
@@ -586,7 +604,9 @@
       "referral_reward": "Davet bonusu: {boosts} ücretsiz öne çıkarma kazandın 🎁",
       "listing_rejected": "\"{title}\" ilanı moderasyondan geçmedi",
       "welcome": "Dəyiş'e hoş geldin! Hediye: ücretsiz öne çıkarma 🎁",
-      "match_found": "Sana uygun yeni bir takas bulundu"
+      "match_found": "Sana uygun yeni bir takas bulundu",
+      "store_created": "\"{name}\" mağazan açıldı! 🏪 İlk ilanını ekle",
+      "store_verified": "\"{name}\" mağazası onaylandı ✅"
     }
   },
   "admin": {
@@ -617,7 +637,14 @@
     "advertiser": "Reklamveren",
     "impressions": "Gösterim",
     "clicks": "Tıklama",
-    "noReports": "Açık şikâyet yok"
+    "noReports": "Açık şikâyet yok",
+    "stores": "Mağazalar",
+    "verify": "Onayla",
+    "unverify": "Onayı kaldır",
+    "activate": "Aktifleştir",
+    "deactivate": "Devre dışı bırak",
+    "storeOwner": "Sahibi",
+    "inactive": "Pasif"
   },
   "ads": {
     "yourAdHere": "Reklamınız burada olabilir",
@@ -678,6 +705,103 @@
     "invalid_phone": "Numara +994XXXXXXXXX formatında olmalı",
     "listing_in_active_trade": "Bu eşya aktif bir takasta",
     "server_error": "Sunucu hatası. Biraz sonra tekrar deneyin",
-    "network": "İnternet bağlantınızı kontrol edin"
+    "network": "İnternet bağlantınızı kontrol edin",
+    "even_swap_only": "Bu ilan sadece başa baş takas edilir",
+    "cash_direction_mismatch": "Para yönü bu ilanın takas türüne uymuyor",
+    "store_exists": "Zaten bir mağazan var",
+    "slug_taken": "Bu adres zaten alınmış",
+    "invalid_slug": "Adres sadece küçük latin harf, rakam ve \"-\" içerebilir",
+    "invalid_url": "Site adresi https:// ile başlamalı",
+    "no_file": "Dosya seçilmedi"
+  },
+  "swap": {
+    "short": {
+      "ANY": "Fark olabilir",
+      "EVEN": "Başa baş",
+      "PAY_EXTRA": "Üste para verir",
+      "WANT_EXTRA": "Üste para ister"
+    },
+    "paysAmount": "Üste {amount} verir",
+    "wantsAmount": "Üste {amount} ister",
+    "type": {
+      "ANY": "Para farkı olabilir",
+      "EVEN": "Başa baş",
+      "PAY_EXTRA": "Üste para veririm",
+      "WANT_EXTRA": "Üste para isterim"
+    },
+    "desc": {
+      "ANY": "İki taraf da para ekleyebilir",
+      "EVEN": "Sadece eşyaya eşya, parasız",
+      "PAY_EXTRA": "Daha pahalı eşya için farkı ben veririm",
+      "WANT_EXTRA": "Eşyamın üstüne para da isterim"
+    },
+    "homeTitle": "Nasıl takas etmek istersin?",
+    "homeSub": "Her ilanda takas türü yazıyor — sürpriz yok.",
+    "see": "İlanlara bak"
+  },
+  "stores": {
+    "tag": "Mağaza",
+    "verified": "Onaylı",
+    "unverified": "Onay bekliyor",
+    "visit": "Mağazaya git",
+    "title": "Mağazalar",
+    "sub": "Elektronik, çocuk eşyası, kitap — mağazalar da takas yapar. Eskiyi getir, yeniyi al.",
+    "searchPh": "Mağaza ara…",
+    "allCities": "Tüm şehirler",
+    "empty": "Mağaza bulunamadı",
+    "emptySub": "Aramayı değiştir ya da ilk mağazayı sen aç!",
+    "listingsCount": "{count} ilan",
+    "tradesCount": "{count} takas",
+    "openCta": "Mağaza aç",
+    "openTitle": "İşletmen mi var? Mağaza aç",
+    "openSub": "Trade-in, eskiyi yeniyle değiştirme, ikinci el — müşteriler seni \"Mağaza\" etiketiyle tanısın.",
+    "b1": "{count} aktif ilana kadar",
+    "b2": "İlanlarında \"Mağaza\" etiketi",
+    "b3": "Kendi mağaza sayfan ve linkin",
+    "b4": "Onaylı rozeti",
+    "createTitle": "Mağazanı oluştur",
+    "manageTitle": "Mağazamı yönet",
+    "name": "Mağaza adı",
+    "namePh": "örn. TexnoBazar Bakü",
+    "slug": "Mağaza adresi",
+    "slugHint": "Boş bırakırsan addan otomatik oluşur",
+    "tagline": "Kısa slogan",
+    "taglinePh": "Eskiyi getir, yeniyi götür",
+    "description": "Mağaza hakkında",
+    "descriptionPh": "Ne satıyorsunuz, neleri kabul ediyorsunuz, garanti…",
+    "city": "Şehir",
+    "address": "Adres",
+    "phone": "Telefon",
+    "instagram": "Instagram",
+    "website": "Web sitesi",
+    "hours": "Çalışma saatleri",
+    "hoursPh": "Pzt–Cmt 10:00–20:00",
+    "categories": "Mağaza kategorileri",
+    "coverColor": "Mağaza rengi",
+    "logo": "Logo",
+    "uploadLogo": "Logo yükle",
+    "create": "Mağazayı aç",
+    "save": "Kaydet",
+    "saved": "Kaydedildi",
+    "created": "Mağazan açıldı! 🎉",
+    "close": "Mağazayı kapat",
+    "closeConfirm": "Mağazanı kapatmak istiyor musun? İlanların normal ilan olarak kalır.",
+    "closed": "Mağaza kapatıldı",
+    "reopenHint": "Mağazan kapalı. Kaydedersen yeniden açılır.",
+    "newListing": "Yeni ilan",
+    "viewStore": "Mağazayı gör",
+    "listings": "Mağazanın ilanları",
+    "reviews": "Yorumlar",
+    "noReviews": "Henüz yorum yok",
+    "noListings": "Mağazada henüz ilan yok",
+    "about": "Hakkında",
+    "contact": "İletişim",
+    "since": "{date} tarihinden beri Dəyiş’te",
+    "verifyNote": "Ad değişirse onay rozeti yeniden kontrol edilir.",
+    "homeTitle": "Mağazalar da takas yapar",
+    "homeSub": "Eski telefonunu getir, üstüne biraz para ver — yenisini götür.",
+    "allStores": "Tüm mağazalar",
+    "limitNote": "Mağaza: {count} aktif ilan limiti",
+    "preview": "Önizleme"
   }
 }

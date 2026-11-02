@@ -78,7 +78,6 @@ function WalletInner() {
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="relative flex flex-col overflow-hidden rounded-4xl bg-ink p-6 text-white">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-nar-500/40 blur-2xl" />
           <WalletIcon className="h-7 w-7 text-white/60" />
           <div className="mt-6 text-sm font-semibold text-white/60">{t('balance')}</div>
           <div className="font-display text-4xl font-black">{formatQepik(u.balance, locale)}</div>
@@ -103,7 +102,7 @@ function WalletInner() {
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {meta?.pricing.topupPacks.map((p) => (
-              <button key={p} onClick={() => setPack(p)} className={clsx('rounded-2xl border-2 py-3 font-display text-lg font-bold transition', pack === p ? 'border-nar-500 bg-nar-50 text-nar-600' : 'border-line hover:border-ink/20')}>
+              <button key={p} onClick={() => setPack(p)} className={clsx('rounded-2xl border-2 py-3 font-display text-lg font-bold transition', pack === p ? 'border-nar-500 bg-nar-100 text-nar-600' : 'border-line hover:border-ink/20')}>
                 {formatQepik(p, locale)}
               </button>
             ))}
@@ -113,7 +112,7 @@ function WalletInner() {
             {t('pay')} {pack ? formatQepik(pack, locale) : ''}
           </button>
           <p className="hint text-center">{t('paymentMethods')}</p>
-          {meta?.payments.provider === 'mock' && <p className="mt-2 rounded-xl bg-zefran-50 px-3 py-2 text-center text-xs font-semibold text-zefran-800">{tc('demoNotice')}</p>}
+          {meta?.payments.provider === 'mock' && <p className="mt-2 rounded-xl bg-zefran-100 px-3 py-2 text-center text-xs font-semibold text-zefran-800">{tc('demoNotice')}</p>}
         </div>
       </div>
 
@@ -136,7 +135,7 @@ function WalletInner() {
                   transition={{ delay: i * 0.06, type: 'spring' }}
                   className={clsx(
                     'flex h-11 flex-1 items-center justify-center rounded-2xl text-sm font-black',
-                    gift ? 'bg-gradient-to-br from-zefran-300 to-zefran-500' : done ? 'bg-xezer-500 text-white' : 'bg-cream text-ink-mute',
+                    gift ? 'border-2 border-ink bg-zefran-400' : done ? 'bg-xezer-500 text-white' : 'bg-cream text-ink-mute',
                   )}
                 >
                   {gift ? <Gift className="h-5 w-5" /> : done ? '✓' : i + 1}
@@ -154,7 +153,7 @@ function WalletInner() {
           </div>
           <p className="mt-2 text-sm text-ink-soft">{t('referralText', { boosts: meta?.pricing.referralBoosts ?? 2 })}</p>
           <div className="mt-4 flex gap-2">
-            <div className="flex-1 rounded-2xl border-2 border-dashed border-lale-400 bg-lale-50 px-4 py-3 text-center font-display text-xl font-black tracking-[0.25em] text-lale-700">{u.referralCode}</div>
+            <div className="flex-1 rounded-2xl border-2 border-dashed border-lale-400 bg-lale-100 px-4 py-3 text-center font-display text-xl font-black tracking-[0.25em] text-lale-700">{u.referralCode}</div>
             <button
               className="btn btn-outline"
               onClick={async () => {
@@ -171,7 +170,7 @@ function WalletInner() {
               <div className="text-xs font-bold uppercase text-ink-mute">{t('referrals')} ({refs.items.length})</div>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {refs.items.map((r) => (
-                  <span key={r.id} className={clsx('badge normal-case tracking-normal', r.referralRewarded ? 'bg-xezer-50 text-xezer-700' : 'bg-cream text-ink-soft')}>
+                  <span key={r.id} className={clsx('badge normal-case tracking-normal', r.referralRewarded ? 'bg-xezer-100 text-xezer-700' : 'bg-cream text-ink-soft')}>
                     {r.name} {r.referralRewarded && '🎁'}
                   </span>
                 ))}

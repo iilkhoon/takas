@@ -123,7 +123,7 @@ router.post('/logout', async (req, res) => {
 });
 
 router.get('/me', requireAuth, async (req, res) => {
-  const user = await prisma.user.findUnique({ where: { id: userId(req) } });
+  const user = await prisma.user.findUnique({ where: { id: userId(req) }, include: { store: { select: { slug: true, name: true, active: true, verified: true } } } });
   if (!user) throw unauthorized();
   const [unreadNotifications, unreadMessages, pendingOffers] = await Promise.all([
     prisma.notification.count({ where: { userId: user.id, readAt: null } }),
@@ -136,7 +136,10 @@ router.get('/me', requireAuth, async (req, res) => {
     }),
     prisma.offer.count({ where: { toUserId: user.id, status: 'PENDING' } }),
   ]);
-  res.json({ user: selfUser(user), counters: { unreadNotifications, unreadMessages, pendingOffers } });
+  res.json({
+    user: { ...selfUser(user), store: user.store?.active ? { slug: user.store.slug, name: user.store.name, verified: user.store.verified } : null },
+    counters: { unreadNotifications, unreadMessages, pendingOffers },
+  });
 });
 
 const passwordSchema = z.object({ current: z.string().min(1), next: z.string().min(8).max(100) });

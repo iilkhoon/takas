@@ -45,7 +45,7 @@ function ConversationList({ activeId }: { activeId?: string }) {
           <li key={c.id}>
             <Link
               href={`/messages/${c.id}`}
-              className={clsx('flex items-center gap-3 px-4 py-3.5 transition hover:bg-cream', activeId === c.id && 'bg-nar-50 hover:bg-nar-50')}
+              className={clsx('flex items-center gap-3 px-4 py-3.5 transition hover:bg-cream', activeId === c.id && 'bg-nar-100 hover:bg-nar-100')}
             >
               <div className="relative">
                 <Avatar name={c.other.name} url={c.other.avatarUrl} size={48} />
@@ -201,7 +201,7 @@ function Chat({ id }: { id: string }) {
       </div>
 
       {activeOffer && (
-        <Link href="/offers" className="flex items-center gap-2 border-b border-line bg-zefran-50 px-4 py-2.5 text-sm font-semibold text-zefran-900 transition hover:bg-zefran-100">
+        <Link href="/offers" className="flex items-center gap-2 border-b border-line bg-zefran-100 px-4 py-2.5 text-sm font-semibold text-zefran-900 transition hover:bg-zefran-100">
           <Repeat2 className="h-4 w-4" />
           {tt(`ostatus.${activeOffer.status}`)}
           <span className="ml-auto text-xs font-bold underline">{t('viewOffer')}</span>
@@ -217,7 +217,7 @@ function Chat({ id }: { id: string }) {
           if (m.kind !== 'TEXT') {
             return (
               <div key={m.id} className="flex justify-center py-1">
-                <span className={clsx('inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold', m.kind === 'OFFER' ? 'bg-ink text-white' : 'bg-white text-ink-soft ring-1 ring-line')}>
+                <span className={clsx('inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold', m.kind === 'OFFER' ? 'bg-ink text-white' : 'bg-white text-ink-soft border-[2.5px] border-ink')}>
                   {m.kind === 'OFFER' && <Repeat2 className="h-3.5 w-3.5" />}
                   {t.has(`system.${m.body}`) ? t(`system.${m.body}`) : m.body}
                   {m.kind === 'OFFER' && (
@@ -240,7 +240,7 @@ function Chat({ id }: { id: string }) {
                 <div
                   className={clsx(
                     'max-w-[80%] rounded-3xl px-4 py-2.5 text-[15px] leading-snug shadow-sm sm:max-w-[65%]',
-                    mine ? 'rounded-br-lg bg-nar-500 text-white' : 'rounded-bl-lg bg-white text-ink ring-1 ring-line',
+                    mine ? 'rounded-br-lg bg-nar-500 text-white' : 'rounded-bl-lg bg-white text-ink border-[2.5px] border-ink',
                   )}
                 >
                   <p className="whitespace-pre-wrap break-words">{m.body}</p>
@@ -291,7 +291,7 @@ function Chat({ id }: { id: string }) {
           }}
           className="flex items-end gap-2"
         >
-          <button type="button" onClick={() => setShowPlaces((s) => !s)} className={clsx('btn-icon h-12 w-12 shrink-0 rounded-2xl', showPlaces && 'bg-xezer-50 text-xezer-600')} aria-label={t('safePlaces')}>
+          <button type="button" onClick={() => setShowPlaces((s) => !s)} className={clsx('btn-icon h-12 w-12 shrink-0 rounded-2xl', showPlaces && 'bg-xezer-100 text-xezer-600')} aria-label={t('safePlaces')}>
             <MapPin className="h-5 w-5" />
           </button>
           <textarea

@@ -19,33 +19,38 @@
 
 ## 2. Loqo
 
-İki ox bir dairə boyunca bir-birini təqib edir (takas), mərkəzdə zəfəran rəngli nöqtə var (nar dənəsi). Hamısı nar qırmızısı fonda, yumru künclü kvadratın içindədir.
+Sarı kvadrat qalın qara konturla çəkilib, altında sərt qara "kölgə" var. İçində iki qara ox bir-birini təqib edir (takas), mərkəzdə moruq rəngli nöqtə durur. Sözlü loqoda "ə" hərfi moruq rəngindədir.
 
 - Fayl: `apps/web/src/app/icon.svg` (favicon) və `apps/web/public/brand/mark.svg`
 - Komponent: `apps/web/src/components/Logo.tsx`
-- Saytda loqonun üzərinə gələndə oxlar 180° fırlanır.
+- Saytda loqonun üzərinə gələndə oxlar fırlanır.
 
-## 3. Rənglər: Azərbaycandan ilhamla
+## 3. Rənglər: neobrutalizm palitrası
 
-| Ad | HEX | Mənası | İstifadə |
-|---|---|---|---|
-| **Nar** | `#E8334A` | Nar, Azərbaycanın simvolu | Əsas düymələr, loqo, qiymətlər |
-| **Xəzər** | `#0E9E97` | Xəzər dənizi | Uğur, "istəyir" blokları, təsdiq |
-| **Zəfəran** | `#FFB000` | Zəfəran, şərq ədviyyatı | VIP, bonuslar, diqqət |
-| **Lalə** | `#7C4DFF` | Lalə | Plus abunəliyi, oyunlaşdırma |
-| **Mürəkkəb** | `#14121F` | — | Mətn, tünd fonlar |
-| **Krem** | `#FFF8F1` | — | Səhifə fonu (isti, mehriban) |
+Rənglər parlaq və düzdür (qradiyent yoxdur). Hər element qalın qara konturla əhatələnir.
+
+| Ad (kodda) | HEX | İstifadə |
+|---|---|---|
+| **Moruq** (`nar`) | `#FF2E63` | Əsas düymələr, CTA, aksent |
+| **Nanə** (`xezer`) | `#1FD68D` | Uğur, "istəyir" blokları, "üstünə verir" |
+| **Limon** (`zefran`) | `#FFDB1F` | Brend rəngi, VIP, bonuslar, "üstünə istəyir" |
+| **Göy** (`lale`) | `#3D5AFE` | Plus, **Mağaza** teqi, "başa baş" |
+| **Mürəkkəb** (`ink`) | `#0B0B0F` | Mətn, konturlar, kölgələr |
+| **Krem** (`cream`) | `#FFF7E8` | Səhifə fonu |
 
 ## 4. Şriftlər
-- **Unbounded** (başlıqlar): enli, əyləncəli, cəsarətli.
-- **Manrope** (mətn): oxunaqlı və müasir.
-- Hər ikisi ə, ğ, ş, ı və kiril hərflərini dəstəkləyir. Şriftlər layihənin içindədir, Google-a sorğu getmir.
+- **Geologica** (başlıqlar): enli və cəsarətli, neobrutalizmə uyğundur.
+- **Onest** (mətn): oxunaqlıdır, Azərbaycan və kiril hərflərini tam dəstəkləyir.
+- **JetBrains Mono** (qiymətlər, nişanlar, etiketlər): "texniki", poster ruhu.
+- Şriftlər layihənin içindədir (`@fontsource-variable`), Google-a sorğu getmir.
 
-## 5. Vizual dil
-- **3D emojilər** (Fluent Emoji). Xərcsiz, amma premium və əyləncəli görünür.
-- **Oyunvari 3D düymələr**: altında kölgə olur, basanda "batır".
-- Hər yerdə yumşaq animasiyalar: kartlar görünəndə qalxır, ürək partlayır, takas oxları fırlanır.
-- Ton: dostcasına "sən" ilə müraciət, qısa cümlələr, emojilərdən ölçülü istifadə.
+## 5. Vizual dil: neobrutalizm
+- **2.5px qara kontur** düymələrdə, kartlarda, inputlarda və nişanlarda.
+- **Sərt kölgələr** bulanıqlıq olmadan çəkilir (`4px 4px 0 #0B0B0F`). Hover zamanı element qalxır, basanda kölgəyə "batır".
+- Kiçik radiuslar, düz parlaq rəng blokları, fonda nöqtəli tor.
+- **3D emojilər** (Fluent Emoji) əyləncəli ton saxlayır.
+- **Takas növü nişanları**: hər növün öz rəngi və ikonu var. Başa baş — göy ⚖, üstünə istəyir — sarı ↙, üstünə verir — yaşıl ↗.
+- Ton: dostcasına "sən" ilə müraciət, qısa cümlələr.
 
 ## 6. Bazar araşdırmasından nəticələr
 

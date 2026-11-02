@@ -23,7 +23,7 @@ export default function OffersPage() {
     <div className="container max-w-4xl py-6 md:py-10">
       <h1 className="font-display text-3xl font-black">{tn('offers')}</h1>
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex rounded-2xl bg-white p-1 ring-1 ring-line">
+        <div className="flex rounded-2xl bg-white p-1 border-[2.5px] border-ink">
           {(['incoming', 'outgoing'] as const).map((b) => (
             <button key={b} onClick={() => setBox(b)} className={clsx('relative rounded-xl px-5 py-2.5 text-sm font-bold transition', box === b ? 'text-white' : 'text-ink-soft')}>
               {box === b && <motion.span layoutId="box" className="absolute inset-0 rounded-xl bg-ink" transition={{ type: 'spring', stiffness: 500, damping: 35 }} />}

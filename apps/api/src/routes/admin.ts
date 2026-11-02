@@ -12,7 +12,7 @@ router.use(requireRole('ADMIN', 'MODERATOR'));
 router.get('/stats', async (_req, res) => {
   const day = new Date(Date.now() - 864e5);
   const week = new Date(Date.now() - 7 * 864e5);
-  const [users, usersWeek, listings, listingsDay, offers, completed, openReports, revenue, plus] = await Promise.all([
+  const [users, usersWeek, listings, listingsDay, offers, completed, openReports, revenue, plus, stores] = await Promise.all([
     prisma.user.count(),
     prisma.user.count({ where: { createdAt: { gt: week } } }),
     prisma.listing.count({ where: { status: 'ACTIVE' } }),
@@ -22,8 +22,9 @@ router.get('/stats', async (_req, res) => {
     prisma.report.count({ where: { status: 'OPEN' } }),
     prisma.transaction.aggregate({ where: { type: 'TOPUP', status: 'SUCCESS' }, _sum: { amount: true } }),
     prisma.user.count({ where: { plan: 'PLUS', planUntil: { gt: new Date() } } }),
+    prisma.store.count({ where: { active: true } }),
   ]);
-  res.json({ users, usersWeek, listings, listingsDay, offers, completed, openReports, revenue: revenue._sum.amount ?? 0, plus });
+  res.json({ users, usersWeek, listings, listingsDay, offers, completed, openReports, revenue: revenue._sum.amount ?? 0, plus, stores });
 });
 
 router.get('/reports', async (req, res) => {
@@ -109,6 +110,22 @@ router.post('/users/:id', async (req, res) => {
   if (body.addBalance) {
     await prisma.transaction.create({ data: { userId: id, type: 'BONUS', status: 'SUCCESS', amount: body.addBalance, provider: 'admin' } });
   }
+  res.json({ ok: true });
+});
+
+router.get('/stores', async (_req, res) => {
+  const items = await prisma.store.findMany({
+    orderBy: [{ verified: 'asc' }, { createdAt: 'desc' }],
+    take: 200,
+    include: { owner: { select: { id: true, name: true, email: true } } },
+  });
+  res.json({ items });
+});
+
+router.post('/stores/:id', async (req, res) => {
+  const body = parse(z.object({ verified: z.boolean().optional(), active: z.boolean().optional() }), req.body);
+  const store = await prisma.store.update({ where: { id: String(req.params.id) }, data: body });
+  if (body.verified) await notify(store.ownerId, 'store_verified', { name: store.name, slug: store.slug });
   res.json({ ok: true });
 });
 

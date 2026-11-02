@@ -7,8 +7,9 @@ import { routing } from '@/i18n/routing';
 import { Providers } from '@/components/Providers';
 import { Header, MobileNav } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import '@fontsource-variable/unbounded';
-import '@fontsource-variable/manrope';
+import '@fontsource-variable/geologica';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/jetbrains-mono';
 import '../globals.css';
 
 
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export const viewport: Viewport = {
-  themeColor: '#E8334A',
+  themeColor: '#FFDB1F',
   width: 'device-width',
   initialScale: 1,
 };
