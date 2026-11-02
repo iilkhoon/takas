@@ -88,11 +88,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {t('home.heroTitle1')}{' '}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-nar-500">{t('home.heroTitleSwap')}</span>
-                  <svg className="absolute -bottom-2 left-0 z-0 h-4 w-full text-zefran-400" viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden>
+                  <span className="relative z-10">,</span>
+                  <svg className="absolute -bottom-2 left-0 z-0 h-4 w-[calc(100%-0.3em)] text-zefran-400" viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden>
                     <path d="M2 11c40-8 90-10 196-4" stroke="currentColor" strokeWidth="7" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>
-                ,<br />
+                <br />
                 {t('home.heroTitle2')}
               </h1>
             </Reveal>
